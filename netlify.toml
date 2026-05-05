@@ -1,0 +1,19 @@
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+# Pretty URLs: /api/snapshot and /api/snapshot/:userId both go to the function.
+# (The Netlify Functions v2 route config handles this internally too, but a
+# redirect is a useful fallback.)
+[[redirects]]
+  from = "/api/snapshot/*"
+  to = "/.netlify/functions/snapshot/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/api/snapshot"
+  to = "/.netlify/functions/snapshot"
+  status = 200

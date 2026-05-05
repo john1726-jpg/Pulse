@@ -1,0 +1,2465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+<meta name="theme-color" content="#0a0e27" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Pulse" />
+<meta name="format-detection" content="telephone=no" />
+<title>Pulse — Fitness</title>
+
+<!-- App icon (gradient flame on dark bg) -->
+<link rel="apple-touch-icon" href="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='b' x1='0' x2='1' y1='0' y2='1'%3E%3Cstop offset='0' stop-color='%230a0e27'/%3E%3Cstop offset='1' stop-color='%231a1530'/%3E%3C/linearGradient%3E%3ClinearGradient id='f' x1='0' x2='0' y1='1' y2='0'%3E%3Cstop offset='0' stop-color='%23ff6b35'/%3E%3Cstop offset='.5' stop-color='%23ff5d6c'/%3E%3Cstop offset='1' stop-color='%237c5cff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='112' fill='url(%23b)'/%3E%3Cpath d='M256 100c40 60 100 80 100 160 0 70-46 130-100 130s-100-60-100-130c0-30 20-50 30-50 0 30 14 40 24 40-2-50 16-100 46-150z' fill='url(%23f)'/%3E%3C/svg%3E" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%94%A5%3C/text%3E%3C/svg%3E" />
+
+<!-- Inline PWA manifest -->
+<link rel="manifest" href='data:application/manifest+json;charset=utf-8,{"name":"Pulse — Fitness","short_name":"Pulse","start_url":".","display":"standalone","background_color":"%230a0e27","theme_color":"%230a0e27","orientation":"portrait","icons":[{"src":"data:image/svg+xml;utf8,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 512 512%27%3E%3Cdefs%3E%3ClinearGradient id=%27b%27 x1=%270%27 x2=%271%27 y1=%270%27 y2=%271%27%3E%3Cstop offset=%270%27 stop-color=%27%230a0e27%27/%3E%3Cstop offset=%271%27 stop-color=%27%231a1530%27/%3E%3C/linearGradient%3E%3ClinearGradient id=%27f%27 x1=%270%27 x2=%270%27 y1=%271%27 y2=%270%27%3E%3Cstop offset=%270%27 stop-color=%27%23ff6b35%27/%3E%3Cstop offset=%27.5%27 stop-color=%27%23ff5d6c%27/%3E%3Cstop offset=%271%27 stop-color=%27%237c5cff%27/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%27512%27 height=%27512%27 rx=%27112%27 fill=%27url(%23b)%27/%3E%3Cpath d=%27M256 100c40 60 100 80 100 160 0 70-46 130-100 130s-100-60-100-130c0-30 20-50 30-50 0 30 14 40 24 40-2-50 16-100 46-150z%27 fill=%27url(%23f)%27/%3E%3C/svg%3E","sizes":"512x512","type":"image/svg+xml","purpose":"any maskable"}]}' />
+
+<style>
+  :root {
+    --bg-0: #0a0e27;
+    --bg-1: #131838;
+    --bg-2: #1d2548;
+    --bg-3: #2a325a;
+    --border: rgba(255,255,255,.08);
+    --border-strong: rgba(255,255,255,.14);
+    --text: #e9edf7;
+    --muted: #8b93b0;
+    --muted-2: #6b7390;
+
+    --c-move: #ff6b35;
+    --c-protein: #ff4d8d;
+    --c-carbs: #f5c518;
+    --c-fats: #a78bfa;
+    --c-steps: #2ee59d;
+    --c-weight: #5fa8ff;
+    --c-burn: #ff5d6c;
+    --c-cal: #ff9e2c;
+
+    --grad-primary: linear-gradient(135deg, #4f8cff 0%, #7c5cff 100%);
+    --grad-flame: linear-gradient(180deg, #ff9e2c 0%, #ff5d6c 50%, #7c5cff 100%);
+    --grad-card: linear-gradient(135deg, rgba(79,140,255,.10), rgba(124,92,255,.08));
+    --grad-pr: linear-gradient(135deg, #ffd166 0%, #ff6b35 50%, #ff4d8d 100%);
+
+    --radius-lg: 22px;
+    --radius: 16px;
+    --radius-sm: 10px;
+
+    --shadow-1: 0 10px 30px rgba(0,0,0,.35);
+    --shadow-soft: 0 4px 18px rgba(0,0,0,.25);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; min-height: 100vh; background: var(--bg-0); color: var(--text); overflow-x: hidden; }
+  body {
+    font: 15px/1.45 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, "Segoe UI", Roboto, sans-serif;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) calc(76px + env(safe-area-inset-bottom)) env(safe-area-inset-left);
+    background:
+      radial-gradient(1100px 700px at 10% -10%, rgba(124,92,255,.20), transparent 60%),
+      radial-gradient(900px 600px at 110% 10%, rgba(255,93,108,.15), transparent 55%),
+      radial-gradient(1200px 700px at 50% 110%, rgba(79,140,255,.15), transparent 55%),
+      var(--bg-0);
+    background-attachment: fixed;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overscroll-behavior-y: none;
+  }
+
+  /* SPLASH */
+  #splash {
+    position: fixed; inset: 0; z-index: 1000;
+    background: radial-gradient(circle at 50% 40%, #1d2548, #0a0e27);
+    display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 14px;
+    transition: opacity .35s ease, visibility .35s;
+  }
+  #splash.hide { opacity: 0; visibility: hidden; }
+  #splash .logo { width: 96px; height: 96px; border-radius: 24px; background: var(--grad-flame); display:flex; align-items:center; justify-content:center; font-size: 50px; box-shadow: 0 16px 60px rgba(255,93,108,.35); animation: pop .6s cubic-bezier(.2,.8,.2,1.2); }
+  #splash .title { font-size: 22px; font-weight: 700; letter-spacing: .5px; }
+  #splash .sub { color: var(--muted); font-size: 13px; }
+  @keyframes pop { 0% { transform: scale(.6); opacity: 0;} 100% { transform: scale(1); opacity: 1;} }
+
+  header.app-header {
+    padding: 14px 18px 8px;
+    display: flex; justify-content: space-between; align-items: center;
+    position: sticky; top: 0; z-index: 6;
+    background: linear-gradient(180deg, rgba(10,14,39,.92), rgba(10,14,39,.6) 80%, transparent);
+    backdrop-filter: saturate(160%) blur(14px);
+    -webkit-backdrop-filter: saturate(160%) blur(14px);
+  }
+  .greeting { display: flex; flex-direction: column; gap: 1px; }
+  .greeting .hi { font-size: 13px; color: var(--muted); }
+  .greeting .name { font-size: 17px; font-weight: 700; }
+  .header-right { display: flex; align-items: center; gap: 8px; }
+  .sync-dot {
+    font-size: 10.5px; font-weight: 700; letter-spacing: .3px;
+    padding: 5px 9px; border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,.04);
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .sync-dot.ok { color: #2ee59d; border-color: rgba(46,229,157,.35); background: rgba(46,229,157,.08); }
+  .sync-dot.err { color: #ff5d6c; border-color: rgba(255,93,108,.35); background: rgba(255,93,108,.08); }
+  .sync-dot.pending { color: #f5c518; border-color: rgba(245,197,24,.35); background: rgba(245,197,24,.08); animation: pulseDim 1.4s ease-in-out infinite; }
+  .sync-dot.off { color: var(--muted-2); }
+  @keyframes pulseDim { 0%,100%{ opacity: .65; } 50%{ opacity: 1; } }
+  @media (max-width: 380px) {
+    .sync-dot { font-size: 9.5px; padding: 4px 7px; }
+  }
+  .streak-pill {
+    background: linear-gradient(135deg, rgba(255,107,53,.18), rgba(255,93,108,.18));
+    border: 1px solid rgba(255,107,53,.4);
+    padding: 6px 11px 6px 8px; border-radius: 999px;
+    display: flex; align-items: center; gap: 6px;
+    font-size: 13px; font-weight: 700; color: #ffce9e;
+    box-shadow: 0 0 24px rgba(255,107,53,.25);
+  }
+  .streak-pill .flame { font-size: 16px; animation: flicker 1.6s ease-in-out infinite; transform-origin: 50% 100%; filter: drop-shadow(0 0 6px rgba(255,107,53,.7)); }
+  @keyframes flicker { 0%,100%{ transform: scale(1); } 50% { transform: scale(1.12) rotate(-3deg); } }
+  .avatar-btn {
+    width: 36px; height: 36px; border-radius: 50%; border: 0; cursor: pointer;
+    font-size: 18px; display:flex; align-items:center; justify-content:center;
+    color: white;
+    box-shadow: var(--shadow-soft);
+  }
+
+  main { max-width: 760px; margin: 0 auto; padding: 6px 16px 24px; }
+
+  .card {
+    background: var(--bg-1);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow-soft);
+    position: relative; overflow: hidden;
+  }
+  .card.glass { background: linear-gradient(135deg, rgba(255,255,255,.04), rgba(255,255,255,.02)); }
+  .card .kicker { font-size: 11px; letter-spacing: 1.5px; color: var(--muted); text-transform: uppercase; font-weight: 700; }
+  .card h2 { margin: 4px 0 12px; font-size: 17px; letter-spacing: -.2px; }
+  .card .sub { color: var(--muted); font-size: 12.5px; margin: -8px 0 12px; }
+
+  /* Activity rings */
+  .rings-card {
+    background:
+      radial-gradient(800px 200px at 50% -20%, rgba(255,107,53,.12), transparent 60%),
+      var(--bg-1);
+  }
+  .rings-row { display: grid; grid-template-columns: 180px 1fr; gap: 14px; align-items: center; }
+  .rings-svg { width: 180px; height: 180px; }
+  .rings-legend { display: flex; flex-direction: column; gap: 10px; }
+  .ring-item { display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; border-radius: 12px; background: rgba(255,255,255,.03); border: 1px solid var(--border); }
+  .ring-item .name { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; display: flex; align-items:center; gap:6px; }
+  .ring-item .name .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .ring-item .val { font-size: 16px; font-weight: 700; }
+  .ring-item .val .goal { color: var(--muted); font-weight: 500; font-size: 12px; }
+  @media (max-width: 380px) {
+    .rings-row { grid-template-columns: 150px 1fr; }
+    .rings-svg { width: 150px; height: 150px; }
+  }
+
+  /* Weekly deficit card */
+  .deficit-card { position: relative; overflow: hidden; }
+  .deficit-card::before {
+    content:''; position:absolute; inset:-40% -10% auto auto; width: 200px; height: 200px;
+    background: radial-gradient(closest-side, rgba(46,229,157,.18), transparent 70%);
+    pointer-events:none;
+  }
+  .deficit-card.surplus::before { background: radial-gradient(closest-side, rgba(255,93,108,.20), transparent 70%); }
+  .deficit-head { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }
+  .deficit-meta { font-size:11px; color:var(--muted); text-align:right; line-height:1.4; }
+  .deficit-big {
+    font-size: 40px; font-weight: 800; letter-spacing:-1px; margin: 8px 0 4px;
+    background: linear-gradient(135deg, #2ee59d, #5fa8ff);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .deficit-card.surplus .deficit-big {
+    background: linear-gradient(135deg, #ff5d6c, #ff9e2c);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .deficit-bars { display:grid; grid-template-columns: repeat(7, 1fr); gap:6px; height: 56px; align-items:end; margin-top:8px; }
+  .deficit-bars .day {
+    position:relative; border-radius: 6px;
+    background: rgba(255,255,255,.04);
+    overflow:hidden; min-height:6px;
+    display:flex; align-items:flex-end; justify-content:center;
+  }
+  .deficit-bars .day .fill {
+    position:absolute; left:0; right:0; bottom:0; border-radius:6px;
+    background: linear-gradient(180deg, #2ee59d, #5fa8ff);
+    transition: height .35s ease;
+  }
+  .deficit-bars .day.neg .fill { background: linear-gradient(180deg, #ff5d6c, #ff9e2c); }
+  .deficit-bars .day .lbl-day {
+    position:absolute; bottom:-16px; left:0; right:0; text-align:center;
+    font-size:9px; color:var(--muted); letter-spacing:.5px; text-transform:uppercase;
+  }
+  .deficit-bars .day.today { box-shadow: inset 0 0 0 1px rgba(255,255,255,.18); }
+  .deficit-foot { margin-top: 22px; color: var(--muted); }
+
+  /* Stat tiles */
+  .tile-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; }
+  .tile-grid.cols-3 { grid-template-columns: repeat(3,1fr); }
+  .tile {
+    background: rgba(255,255,255,.03);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px;
+    display: flex; flex-direction: column; gap: 4px; min-height: 78px;
+    position: relative; overflow: hidden;
+    transition: transform .12s ease;
+  }
+  .tile:active { transform: scale(.98); }
+  .tile .lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+  .tile .lbl .swatch { width: 6px; height: 14px; border-radius: 3px; }
+  .tile .val { font-size: 22px; font-weight: 700; line-height: 1.1; letter-spacing: -.3px; }
+  .tile .val .u { font-size: 12px; color: var(--muted); margin-left: 3px; font-weight: 500; }
+  .tile .delta { font-size: 11px; font-weight: 700; }
+  .tile .delta.up { color: var(--c-steps); }
+  .tile .delta.down { color: var(--c-burn); }
+
+  /* Inputs */
+  label.fld { display: block; font-size: 11px; color: var(--muted); margin-bottom: 4px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+  .input, select, textarea {
+    width: 100%; appearance: none; -webkit-appearance: none;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    color: var(--text);
+    font-size: 16px;
+    outline: none;
+    transition: border-color .15s, background .15s, box-shadow .15s;
+    font-family: inherit;
+  }
+  .input:focus, select:focus, textarea:focus { border-color: rgba(124,92,255,.55); background: var(--bg-3); box-shadow: 0 0 0 4px rgba(124,92,255,.15); }
+  input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  input[type="number"] { -moz-appearance: textfield; }
+  .grid { display: grid; gap: 10px; }
+  .grid.c2 { grid-template-columns: 1fr 1fr; }
+  .grid.c3 { grid-template-columns: repeat(3,1fr); }
+  .grid.c4 { grid-template-columns: repeat(4,1fr); }
+  .row { display: flex; gap: 10px; align-items: center; }
+  .row > * { flex: 1; }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    background: var(--grad-primary);
+    color: white; border: 0; padding: 13px 16px; border-radius: 14px;
+    font-weight: 700; font-size: 15px; cursor: pointer; width: 100%;
+    transition: transform .06s ease, filter .15s, opacity .15s;
+    letter-spacing: .2px;
+    box-shadow: 0 6px 18px rgba(79,140,255,.30);
+  }
+  .btn:active { transform: scale(.97); }
+  .btn.secondary { background: rgba(255,255,255,.06); border: 1px solid var(--border); box-shadow: none; }
+  .btn.ghost { background: transparent; border: 1px solid var(--border); box-shadow: none; }
+  .btn.flame { background: linear-gradient(135deg, #ff6b35, #ff4d8d); box-shadow: 0 6px 22px rgba(255,107,53,.35); }
+  .btn.danger { background: linear-gradient(135deg, #c0392b, #ff5d6c); }
+  .btn.compact { padding: 10px 12px; font-size: 13px; }
+  .btn-row { display: flex; gap: 8px; }
+  .btn-row .btn { flex: 1; }
+
+  .iconbtn { background: rgba(255,255,255,.04); border: 1px solid var(--border); color: var(--muted); width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; border-radius: 10px; cursor: pointer; }
+  .iconbtn:active { background: rgba(255,255,255,.10); }
+
+  /* Lists */
+  .list { display: flex; flex-direction: column; gap: 8px; }
+  .row-item {
+    background: rgba(255,255,255,.03);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 12px 14px;
+    display: flex; justify-content: space-between; align-items: center; gap: 10px;
+  }
+  .row-item .meta { color: var(--muted); font-size: 12.5px; }
+  .row-item .actions { display: flex; gap: 4px; }
+  .row-item .iconbtn { width: 32px; height: 32px; }
+  .empty { text-align: center; padding: 22px 12px; color: var(--muted); font-size: 13px; border: 1px dashed var(--border-strong); border-radius: 14px; }
+
+  /* Bottom Nav */
+  nav.tabs {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+    display: grid; grid-template-columns: repeat(4,1fr);
+    background: rgba(10,14,39,.85);
+    backdrop-filter: saturate(140%) blur(20px);
+    -webkit-backdrop-filter: saturate(140%) blur(20px);
+    border-top: 1px solid var(--border);
+    padding: 6px 6px env(safe-area-inset-bottom);
+  }
+  nav.tabs button {
+    background: none; border: 0; color: var(--muted-2); cursor: pointer;
+    padding: 10px 6px 8px; font-size: 11px; font-weight: 700; letter-spacing: .4px;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    border-radius: 12px;
+    transition: color .15s, background .15s;
+  }
+  nav.tabs button.active { color: var(--text); background: rgba(255,255,255,.04); }
+  nav.tabs button.active svg { filter: drop-shadow(0 0 8px rgba(124,92,255,.6)); }
+  nav.tabs svg { width: 22px; height: 22px; }
+  nav.tabs button.active svg path, nav.tabs button.active svg circle { stroke: url(#tabGrad); }
+
+  /* Sections */
+  section.tab { animation: fadeUp .3s ease both; }
+  section.tab.hidden { display: none; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  /* Chips */
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .chip {
+    background: rgba(255,255,255,.05);
+    border: 1px solid var(--border);
+    padding: 7px 12px;
+    border-radius: 999px;
+    font-size: 12.5px;
+    color: var(--muted);
+    cursor: pointer;
+    font-weight: 600;
+    transition: all .15s;
+  }
+  .chip:active { transform: scale(.96); }
+  .chip.active { background: var(--grad-primary); color: white; border-color: transparent; }
+
+  /* Badges/Achievements */
+  .badge-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .badge {
+    aspect-ratio: 1;
+    border-radius: 16px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 4px; font-size: 28px;
+    background: rgba(255,255,255,.03);
+    border: 1px solid var(--border);
+    text-align: center; padding: 6px;
+    transition: transform .15s;
+  }
+  .badge.unlocked {
+    background: var(--grad-pr);
+    border-color: transparent;
+    box-shadow: 0 6px 22px rgba(255,93,108,.30);
+    color: #2a0d0a;
+  }
+  .badge .lbl { font-size: 9px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; }
+  .badge.locked { opacity: .5; filter: grayscale(.6); }
+
+  /* Modal / Sheet */
+  .sheet-bg {
+    position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 50;
+    opacity: 0; pointer-events: none; transition: opacity .25s;
+    backdrop-filter: blur(4px);
+  }
+  .sheet-bg.show { opacity: 1; pointer-events: auto; }
+  .sheet {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
+    background: var(--bg-1);
+    border-top: 1px solid var(--border);
+    border-radius: 24px 24px 0 0;
+    padding: 8px 18px calc(20px + env(safe-area-inset-bottom));
+    transform: translateY(100%); transition: transform .3s cubic-bezier(.2,.8,.2,1);
+    max-height: 85vh; overflow-y: auto;
+    box-shadow: 0 -8px 30px rgba(0,0,0,.5);
+  }
+  .sheet.show { transform: translateY(0); }
+  .sheet .grabber { width: 40px; height: 4px; border-radius: 2px; background: var(--border-strong); margin: 8px auto 14px; }
+  .sheet h3 { margin: 0 0 12px; font-size: 18px; }
+
+  /* Toast */
+  .toast {
+    position: fixed; left: 50%; transform: translateX(-50%) translateY(20px);
+    bottom: calc(86px + env(safe-area-inset-bottom)); z-index: 200;
+    background: rgba(20,24,55,.96);
+    border: 1px solid var(--border-strong);
+    color: var(--text); padding: 10px 16px; border-radius: 999px; font-size: 13px;
+    box-shadow: var(--shadow-1);
+    opacity: 0; pointer-events: none; transition: opacity .25s, transform .25s;
+    backdrop-filter: blur(8px);
+    max-width: 80vw; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.pr { background: var(--grad-pr); color: #2a0d0a; border-color: transparent; font-weight: 800; letter-spacing: .3px; }
+
+  /* Confetti canvas */
+  #confetti { position: fixed; inset: 0; pointer-events: none; z-index: 300; }
+
+  /* Charts (custom SVG) */
+  .chart-wrap { width: 100%; }
+  .chart-wrap svg { width: 100%; height: auto; display: block; }
+  .legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 12px; color: var(--muted); margin-top: 8px; }
+  .legend .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; vertical-align: middle; }
+
+  /* Utility */
+  .hidden { display: none !important; }
+  .row-flex { display: flex; gap: 8px; align-items: end; }
+  .small { font-size: 12px; color: var(--muted); }
+  .xs { font-size: 11px; color: var(--muted); }
+  .stack { display: flex; flex-direction: column; gap: 10px; }
+  .center { text-align: center; }
+  .pr-flag {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: var(--grad-pr); color: #2a0d0a;
+    padding: 2px 8px; border-radius: 999px; font-size: 10.5px; font-weight: 800;
+    letter-spacing: .5px; text-transform: uppercase;
+  }
+  .friend-card {
+    display: flex; align-items: center; gap: 12px;
+    background: rgba(255,255,255,.03);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: transform .12s;
+  }
+  .friend-card:active { transform: scale(.99); }
+  .avatar { width: 44px; height: 44px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; color: white; box-shadow: var(--shadow-soft); }
+  .lb-row { display: grid; grid-template-columns: 28px 1fr auto; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .lb-row:last-child { border-bottom: 0; }
+  .lb-row .rank { width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; background: rgba(255,255,255,.05); color: var(--muted); }
+  .lb-row.first .rank { background: var(--grad-pr); color: #2a0d0a; }
+
+  /* Number animation */
+  .countup { font-variant-numeric: tabular-nums; }
+
+  /* Hide scrollbars on chip rows (safari) */
+  .scroll-x { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; -webkit-overflow-scrolling: touch; }
+  .scroll-x::-webkit-scrollbar { display: none; }
+</style>
+</head>
+<body>
+
+<!-- Splash -->
+<div id="splash">
+  <div class="logo">🔥</div>
+  <div class="title">Pulse</div>
+  <div class="sub">Your fitness, in motion.</div>
+</div>
+
+<!-- Header -->
+<header class="app-header">
+  <div class="greeting">
+    <span class="hi" id="hiText">Welcome back</span>
+    <span class="name" id="userName">You</span>
+  </div>
+  <div class="header-right">
+    <span class="sync-dot pending" id="syncDot" title="Cloud sync status">☁️ Syncing…</span>
+    <div class="streak-pill" id="streakPill" title="Current streak">
+      <span class="flame">🔥</span><span id="streakNum">0</span>
+    </div>
+    <button class="avatar-btn" id="profileBtn" aria-label="Profile">⚙️</button>
+  </div>
+</header>
+
+<!-- SVG defs (gradients) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="tabGrad" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#4f8cff"/><stop offset="1" stop-color="#7c5cff"/>
+    </linearGradient>
+    <linearGradient id="gMove" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#ff9e2c"/><stop offset="1" stop-color="#ff4d8d"/></linearGradient>
+    <linearGradient id="gProtein" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#ff4d8d"/><stop offset="1" stop-color="#ff5d6c"/></linearGradient>
+    <linearGradient id="gSteps" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#2ee59d"/><stop offset="1" stop-color="#5fa8ff"/></linearGradient>
+    <linearGradient id="gWeight" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#5fa8ff" stop-opacity=".7"/><stop offset="1" stop-color="#5fa8ff" stop-opacity="0"/></linearGradient>
+    <linearGradient id="gPR" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#ff6b35" stop-opacity=".7"/><stop offset="1" stop-color="#ff6b35" stop-opacity="0"/></linearGradient>
+    <linearGradient id="gLineDef" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#7c5cff" stop-opacity=".7"/><stop offset="1" stop-color="#7c5cff" stop-opacity="0"/></linearGradient>
+  </defs>
+</svg>
+
+<main>
+
+  <!-- TODAY TAB -->
+  <section id="tab-today" class="tab">
+
+    <!-- Activity rings -->
+    <div class="card rings-card">
+      <div class="kicker">Today's rings</div>
+      <h2 id="todayDateLabel">—</h2>
+      <div class="rings-row">
+        <svg class="rings-svg" id="ringsSvg" viewBox="0 0 100 100"></svg>
+        <div class="rings-legend" id="ringsLegend"></div>
+      </div>
+    </div>
+
+    <!-- Weekly deficit card -->
+    <div class="card deficit-card" id="weeklyDeficitCard">
+      <div class="deficit-head">
+        <div>
+          <div class="kicker">This week</div>
+          <h2 style="margin:2px 0 0">Calorie deficit</h2>
+        </div>
+        <div class="deficit-meta" id="deficitMeta">—</div>
+      </div>
+      <div class="deficit-big" id="deficitBig">—</div>
+      <div class="deficit-bars" id="deficitBars"></div>
+      <div class="deficit-foot small" id="deficitFoot">Resets every Monday.</div>
+    </div>
+
+    <!-- Quick log -->
+    <div class="card">
+      <div class="kicker">Daily log</div>
+      <h2>Log your day</h2>
+      <div class="grid c2">
+        <div>
+          <label class="fld" for="d-date">Date</label>
+          <input class="input" type="date" id="d-date" />
+        </div>
+        <div>
+          <label class="fld" for="d-weight">Weight (lbs)</label>
+          <input class="input" type="number" inputmode="decimal" step="0.1" id="d-weight" placeholder="—" />
+        </div>
+        <div>
+          <label class="fld" for="d-calories">🔥 Calories in</label>
+          <input class="input" type="number" inputmode="numeric" id="d-calories" placeholder="—" />
+        </div>
+        <div>
+          <label class="fld" for="d-burned">💨 Calories burned</label>
+          <input class="input" type="number" inputmode="numeric" id="d-burned" placeholder="—" />
+        </div>
+        <div>
+          <label class="fld" for="d-protein">💪 Protein (g)</label>
+          <input class="input" type="number" inputmode="numeric" id="d-protein" placeholder="—" />
+        </div>
+        <div>
+          <label class="fld" for="d-carbs">🌾 Carbs (g)</label>
+          <input class="input" type="number" inputmode="numeric" id="d-carbs" placeholder="—" />
+        </div>
+        <div>
+          <label class="fld" for="d-fats">🥑 Fats (g)</label>
+          <input class="input" type="number" inputmode="numeric" id="d-fats" placeholder="—" />
+        </div>
+        <div>
+          <label class="fld" for="d-steps">👟 Steps</label>
+          <input class="input" type="number" inputmode="numeric" id="d-steps" placeholder="—" />
+        </div>
+      </div>
+      <div style="height:12px"></div>
+      <div class="btn-row">
+        <button class="btn" id="d-save">Save day</button>
+        <button class="btn secondary" id="d-clear">Clear</button>
+      </div>
+    </div>
+
+    <!-- Snapshot tiles -->
+    <div class="card">
+      <div class="kicker">At a glance</div>
+      <h2>Day snapshot</h2>
+      <div class="tile-grid" id="dailySnapshot"></div>
+    </div>
+
+    <!-- Recent days -->
+    <div class="card">
+      <div class="kicker">History</div>
+      <h2>Recent days</h2>
+      <div class="list" id="dailyList"></div>
+    </div>
+
+  </section>
+
+  <!-- WORKOUTS TAB -->
+  <section id="tab-workouts" class="tab hidden">
+    <div class="card">
+      <div class="kicker">New set</div>
+      <h2>Log a set</h2>
+      <div class="grid c2">
+        <div>
+          <label class="fld" for="w-date">Date</label>
+          <input class="input" type="date" id="w-date" />
+        </div>
+        <div>
+          <label class="fld" for="w-exercise">Exercise</label>
+          <input class="input" type="text" id="w-exercise" list="exerciseList" placeholder="e.g. Bench Press" autocapitalize="words" />
+          <datalist id="exerciseList"></datalist>
+        </div>
+        <div>
+          <label class="fld" for="w-weight">Weight (lbs)</label>
+          <input class="input" type="number" inputmode="decimal" step="0.5" id="w-weight" placeholder="—" />
+        </div>
+        <div>
+          <label class="fld" for="w-reps">Reps</label>
+          <input class="input" type="number" inputmode="numeric" id="w-reps" placeholder="—" />
+        </div>
+      </div>
+      <div style="height:12px"></div>
+      <button class="btn flame" id="w-add">+ Add set</button>
+      <div id="quickExercises" class="chips"></div>
+    </div>
+
+    <div class="card">
+      <div class="kicker">Today</div>
+      <h2>Today's session</h2>
+      <div class="list" id="todaySets"></div>
+    </div>
+
+    <div class="card">
+      <div class="kicker">History</div>
+      <h2>Past sessions</h2>
+      <div id="workoutList"></div>
+    </div>
+  </section>
+
+  <!-- PROGRESS TAB -->
+  <section id="tab-progress" class="tab hidden">
+    <div class="card">
+      <div class="kicker">Lift progress</div>
+      <h2>Per-exercise progression</h2>
+      <div class="sub">Heaviest lift each session.</div>
+      <select class="input" id="p-exercise"></select>
+      <div style="height:12px"></div>
+      <div class="chart-wrap" id="chart-exercise-wrap"></div>
+      <div class="tile-grid cols-3" id="prSummary" style="margin-top:12px"></div>
+    </div>
+
+    <div class="card">
+      <div class="kicker">Bodyweight</div>
+      <h2>Weight trend</h2>
+      <div class="chart-wrap" id="chart-weight-wrap"></div>
+    </div>
+
+    <div class="card">
+      <div class="kicker">Energy balance</div>
+      <h2>Calories</h2>
+      <div class="chart-wrap" id="chart-calories-wrap"></div>
+      <div class="legend">
+        <span><span class="dot" style="background:var(--c-cal)"></span>In</span>
+        <span><span class="dot" style="background:var(--c-burn)"></span>Burned</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="kicker">Macros</div>
+      <h2>Protein · Carbs · Fats</h2>
+      <div class="chart-wrap" id="chart-macros-wrap"></div>
+      <div class="legend">
+        <span><span class="dot" style="background:var(--c-protein)"></span>Protein</span>
+        <span><span class="dot" style="background:var(--c-carbs)"></span>Carbs</span>
+        <span><span class="dot" style="background:var(--c-fats)"></span>Fats</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="kicker">Movement</div>
+      <h2>Steps</h2>
+      <div class="chart-wrap" id="chart-steps-wrap"></div>
+    </div>
+
+    <div class="card">
+      <div class="kicker">Achievements</div>
+      <h2>Badges</h2>
+      <div class="badge-grid" id="badgeGrid"></div>
+    </div>
+
+    <div class="card">
+      <div class="kicker">Data</div>
+      <h2>Backup & restore</h2>
+      <div class="btn-row">
+        <button class="btn secondary" id="exportBtn">Export</button>
+        <button class="btn secondary" id="importBtn">Import</button>
+      </div>
+      <div style="height:8px"></div>
+      <button class="btn danger" id="resetBtn">Reset all data</button>
+      <input type="file" id="importFile" accept="application/json,.json" class="hidden" />
+      <p class="small" style="margin-top:10px">All data lives on this device. Use Export/Import to back up or move between devices.</p>
+    </div>
+  </section>
+
+  <!-- FRIENDS TAB -->
+  <section id="tab-friends" class="tab hidden">
+    <div class="card">
+      <div class="kicker">Squad</div>
+      <h2>Compete with friends 💥</h2>
+      <div class="sub">Share a link with friends — when they tap it, they see your stats and you can see theirs.</div>
+      <div class="btn-row">
+        <button class="btn flame" id="shareBtn">📲 Share my stats</button>
+        <button class="btn secondary" id="addFriendBtn">+ Add</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="kicker">Leaderboards</div>
+      <h2>Who's on top</h2>
+      <div class="scroll-x" id="lbTabs">
+        <span class="chip active" data-lb="streak">🔥 Streak</span>
+        <span class="chip" data-lb="lift">🏋️ Best lift</span>
+        <span class="chip" data-lb="steps7">👟 7-day steps</span>
+        <span class="chip" data-lb="cal7">💨 7-day burn</span>
+        <span class="chip" data-lb="deficit">📉 Week deficit</span>
+      </div>
+      <div id="leaderboard" style="margin-top:10px"></div>
+    </div>
+
+    <div class="card">
+      <div class="kicker">Crew</div>
+      <h2>Friends</h2>
+      <div class="list" id="friendsList"></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Bottom Nav -->
+<nav class="tabs" role="tablist">
+  <button data-tab="today" class="active">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="9"/>
+    </svg>
+    Today
+  </button>
+  <button data-tab="workouts">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 6l-2 2 4 4-4 4 2 2 4-4 4 4 2-2-4-4 4-4-2-2-4 4z"/>
+    </svg>
+    Lift
+  </button>
+  <button data-tab="progress">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 3v18h18M7 15l4-4 3 3 5-6"/>
+    </svg>
+    Stats
+  </button>
+  <button data-tab="friends">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M16 11a4 4 0 1 0-4-4M8 11a4 4 0 1 1 4-4M2 21v-1a5 5 0 0 1 5-5h2M22 21v-1a5 5 0 0 0-5-5h-2"/>
+    </svg>
+    Friends
+  </button>
+</nav>
+
+<!-- Sheet (modal) -->
+<div class="sheet-bg" id="sheetBg"></div>
+<div class="sheet" id="sheet">
+  <div class="grabber"></div>
+  <div id="sheetBody"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+<canvas id="confetti"></canvas>
+
+<script>
+(() => {
+'use strict';
+
+// ====================== STATE ======================
+const KEY = 'pulse-fitness-v2';
+const KEY_OLD = 'fitness-tracker-v1';
+
+const DEFAULT_GOALS = { calories: 2000, burned: 500, protein: 160, carbs: 250, fats: 70, steps: 10000 };
+const AVATAR_PALETTE = [
+  '#5fa8ff','#7c5cff','#ff4d8d','#ff6b35','#2ee59d','#f5c518','#a78bfa','#22d3ee','#fb7185','#84cc16'
+];
+const EMOJIS = ['💪','🔥','🏋️','🚴','🏃','🥗','🥑','🍳','⚡️','🥇','🌶','🦾','🌟','🎯','🍎','🐺','🦄','🐉','🦅','🪐'];
+
+function defaultState() {
+  const seed = Math.floor(Math.random() * AVATAR_PALETTE.length);
+  return {
+    profile: {
+      id: cryptoId(),
+      writeToken: writeTokenId(),
+      name: 'You',
+      emoji: '💪',
+      color: AVATAR_PALETTE[seed],
+      goals: { ...DEFAULT_GOALS }
+    },
+    daily: {},
+    workouts: [],
+    achievements: {}, // { key: dateUnlocked }
+    friends: {},      // { friendId: { profile, daily, workouts, lastSync } }
+    cloudSync: { lastPushed: null, lastPulled: null, lastError: null, enabled: true },
+    lastViewedDate: null
+  };
+}
+
+function cryptoId() {
+  // 16-char random ID
+  return [...crypto.getRandomValues(new Uint8Array(8))].map(b => b.toString(16).padStart(2,'0')).join('');
+}
+function writeTokenId() {
+  // 48-char private write token (only kept locally on the original device)
+  return [...crypto.getRandomValues(new Uint8Array(24))].map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+function load() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (raw) {
+      const s = JSON.parse(raw);
+      // ensure required keys
+      const def = defaultState();
+      const profile = { ...def.profile, ...(s.profile || {}), goals: { ...DEFAULT_GOALS, ...(s.profile?.goals || {}) } };
+      // Migrate: existing users may not have a writeToken yet — generate one
+      if (!profile.writeToken) profile.writeToken = writeTokenId();
+      return {
+        profile,
+        daily: s.daily || {},
+        workouts: s.workouts || [],
+        achievements: s.achievements || {},
+        friends: s.friends || {},
+        cloudSync: s.cloudSync || { lastPushed: null, lastPulled: null, lastError: null, enabled: true },
+        lastViewedDate: s.lastViewedDate || null,
+      };
+    }
+    // Migrate from v1
+    const old = localStorage.getItem(KEY_OLD);
+    if (old) {
+      const o = JSON.parse(old);
+      const def = defaultState();
+      return { ...def, daily: o.daily || {}, workouts: (o.workouts || []).map(w => ({ ...w, id: w.id || cryptoId() })) };
+    }
+  } catch (e) { console.warn('load failed', e); }
+  return defaultState();
+}
+
+function save(opts = {}) {
+  localStorage.setItem(KEY, JSON.stringify(state));
+  if (!opts.skipPush) schedulePush();
+}
+
+let state = load();
+
+// ====================== CLOUD SYNC ======================
+const API_BASE = '/api';
+let _pushTimer = null;
+let _pullTimer = null;
+
+function cloudSnapshot() {
+  return {
+    profile: {
+      id: state.profile.id,
+      name: state.profile.name,
+      emoji: state.profile.emoji,
+      color: state.profile.color,
+      goals: state.profile.goals,
+    },
+    daily: state.daily,
+    workouts: state.workouts.map(w => ({ id: w.id, date: w.date, exercise: w.exercise, weight: w.weight, reps: w.reps })),
+    achievements: state.achievements,
+    sharedAt: new Date().toISOString(),
+    v: 3,
+  };
+}
+
+function syncDisabled() {
+  // Allow file:// usage (no API) without erroring
+  return location.protocol === 'file:' || state.cloudSync?.enabled === false;
+}
+
+async function pushSnapshot() {
+  if (syncDisabled()) return;
+  if (!state.profile.writeToken || !state.profile.id) return;
+  // Don't push if name is still the default ("You") — wait until they pick a real name
+  if (profileNameLooksDefault && profileNameLooksDefault()) return;
+  try {
+    const res = await fetch(`${API_BASE}/snapshot`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        userId: state.profile.id,
+        writeToken: state.profile.writeToken,
+        snapshot: cloudSnapshot(),
+      }),
+    });
+    if (!res.ok) {
+      const txt = await res.text().catch(() => '');
+      throw new Error(`push ${res.status} ${txt.slice(0,80)}`);
+    }
+    state.cloudSync = { ...(state.cloudSync||{}), lastPushed: Date.now(), lastError: null, enabled: true };
+    localStorage.setItem(KEY, JSON.stringify(state));
+    updateSyncIndicator?.();
+  } catch (e) {
+    console.warn('cloud push failed', e);
+    state.cloudSync = { ...(state.cloudSync||{}), lastError: String(e?.message || e) };
+    localStorage.setItem(KEY, JSON.stringify(state));
+    updateSyncIndicator?.();
+  }
+}
+
+function schedulePush() {
+  clearTimeout(_pushTimer);
+  _pushTimer = setTimeout(pushSnapshot, 1500);
+}
+
+async function pullFriend(friendId, opts = {}) {
+  if (syncDisabled()) return false;
+  if (!friendId) return false;
+  try {
+    const res = await fetch(`${API_BASE}/snapshot/${encodeURIComponent(friendId)}`);
+    if (res.status === 404) return false;
+    if (!res.ok) throw new Error(`pull ${res.status}`);
+    const { snapshot } = await res.json();
+    if (!snapshot || !snapshot.profile) return false;
+    addFriendFromSnapshot(snapshot, { silent: true, skipPush: true });
+    return true;
+  } catch (e) {
+    console.warn('cloud pull failed for', friendId, e);
+    return false;
+  }
+}
+
+async function pullAllFriends() {
+  if (syncDisabled()) return;
+  const ids = Object.keys(state.friends || {});
+  if (!ids.length) return;
+  const results = await Promise.allSettled(ids.map(id => pullFriend(id, { silent: true })));
+  const updated = results.filter(r => r.status === 'fulfilled' && r.value).length;
+  state.cloudSync = { ...(state.cloudSync||{}), lastPulled: Date.now() };
+  localStorage.setItem(KEY, JSON.stringify(state));
+  if (updated > 0) {
+    renderFriends?.();
+    showToast?.(`Synced ${updated} friend${updated===1?'':'s'}`);
+  }
+  updateSyncIndicator?.();
+}
+
+function updateSyncIndicator() {
+  const el = document.getElementById('syncDot');
+  if (!el) return;
+  const c = state.cloudSync || {};
+  if (syncDisabled()) {
+    el.textContent = '☁️ Offline'; el.className = 'sync-dot off'; return;
+  }
+  if (c.lastError) {
+    el.textContent = '☁️ Sync error'; el.className = 'sync-dot err';
+    el.title = c.lastError; return;
+  }
+  if (c.lastPushed || c.lastPulled) {
+    const t = Math.max(c.lastPushed||0, c.lastPulled||0);
+    const ago = Math.round((Date.now() - t) / 1000);
+    el.textContent = ago < 60 ? '☁️ Synced' : `☁️ ${Math.round(ago/60)}m ago`;
+    el.className = 'sync-dot ok'; return;
+  }
+  el.textContent = '☁️ Syncing…'; el.className = 'sync-dot pending';
+}
+
+// ====================== UTIL ======================
+const $ = (s, p=document) => p.querySelector(s);
+const $$ = (s, p=document) => Array.from(p.querySelectorAll(s));
+const haptic = (ms=8) => { try { navigator.vibrate?.(ms); } catch {} };
+const num = v => { const n = parseFloat(v); return Number.isFinite(n) ? n : null; };
+const todayStr = () => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+};
+const fmtDate = s => new Date(s + 'T12:00:00').toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+const fmtDateLong = s => new Date(s + 'T12:00:00').toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
+const escapeHtml = s => String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+const epley = (w,r) => w * (1 + r/30);
+const titleCase = s => s.trim().replace(/\s+/g,' ').replace(/\b\w/g, c => c.toUpperCase());
+
+function showToast(msg, opts={}) {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (opts.pr ? ' pr' : '');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => t.classList.remove('show'), opts.duration || 1800);
+}
+
+function openSheet(html) {
+  $('#sheetBody').innerHTML = html;
+  $('#sheet').classList.add('show');
+  $('#sheetBg').classList.add('show');
+  haptic(6);
+}
+function closeSheet() {
+  $('#sheet').classList.remove('show');
+  $('#sheetBg').classList.remove('show');
+}
+$('#sheetBg').addEventListener('click', closeSheet);
+
+// ====================== DATE / GREETING ======================
+function updateGreeting() {
+  const h = new Date().getHours();
+  const txt = h < 5 ? 'Late night, champ' :
+              h < 12 ? 'Good morning' :
+              h < 17 ? 'Good afternoon' :
+              h < 21 ? 'Good evening' : 'Late night, champ';
+  $('#hiText').textContent = txt;
+  $('#userName').textContent = state.profile.name || 'You';
+  $('#profileBtn').textContent = state.profile.emoji || '⚙️';
+  $('#profileBtn').style.background = state.profile.color || '#7c5cff';
+  $('#todayDateLabel').textContent = new Date().toLocaleDateString(undefined, { weekday:'long', month:'long', day:'numeric' });
+}
+
+// ====================== STREAK ======================
+function streakOf(person /* {daily, workouts} */) {
+  // A "day" counts if there's any daily entry OR any workout for that date.
+  const days = new Set(Object.keys(person.daily || {}));
+  for (const w of person.workouts || []) days.add(w.date);
+  if (!days.size) return 0;
+  let count = 0;
+  let d = new Date();
+  d.setHours(12,0,0,0);
+  // If today's missing, start streak from yesterday (don't break for a not-yet-logged today)
+  let s = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  if (!days.has(s)) { d.setDate(d.getDate() - 1); }
+  while (true) {
+    s = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    if (days.has(s)) { count++; d.setDate(d.getDate() - 1); }
+    else break;
+  }
+  return count;
+}
+
+function updateStreakUI() {
+  const s = streakOf(state);
+  const el = $('#streakNum');
+  animateNumber(el, parseInt(el.textContent || '0',10), s, 600);
+}
+
+// ====================== ANIMATE NUMBER ======================
+function animateNumber(el, from, to, dur=500, fmt=Math.round) {
+  const start = performance.now();
+  const step = (now) => {
+    const t = clamp((now - start)/dur, 0, 1);
+    const eased = 1 - Math.pow(1 - t, 3);
+    el.textContent = fmt(from + (to - from) * eased);
+    if (t < 1) requestAnimationFrame(step);
+    else el.textContent = fmt(to);
+  };
+  requestAnimationFrame(step);
+}
+
+// ====================== ACTIVITY RINGS ======================
+function renderRings() {
+  const date = $('#d-date').value || todayStr();
+  const e = state.daily[date] || {};
+  const goals = state.profile.goals;
+  // Three rings: Move (cal in - burned... actually use calories burned vs goal), Protein, Steps
+  // Outer ring: Move (calories burned / goal.burned)
+  // Middle ring: Protein (g / goal.protein)
+  // Inner ring: Steps / goal.steps
+  const rings = [
+    { name: 'Move', val: e.burned || 0, goal: goals.burned, unit: 'kcal burned', color: 'url(#gMove)', dot: 'var(--c-move)', r: 42 },
+    { name: 'Protein', val: e.protein || 0, goal: goals.protein, unit: 'g protein', color: 'url(#gProtein)', dot: 'var(--c-protein)', r: 32 },
+    { name: 'Steps', val: e.steps || 0, goal: goals.steps, unit: 'steps', color: 'url(#gSteps)', dot: 'var(--c-steps)', r: 22 }
+  ];
+  const svg = $('#ringsSvg');
+  const stroke = 8;
+  const cx = 50, cy = 50;
+  const parts = [];
+  parts.push(`<g transform="rotate(-90 50 50)">`);
+  for (const r of rings) {
+    const C = 2 * Math.PI * r.r;
+    const ratio = r.goal > 0 ? clamp(r.val / r.goal, 0, 1.0001) : 0;
+    const dash = C * ratio;
+    parts.push(`<circle cx="${cx}" cy="${cy}" r="${r.r}" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="${stroke}"/>`);
+    parts.push(`<circle cx="${cx}" cy="${cy}" r="${r.r}" fill="none" stroke="${r.color}" stroke-width="${stroke}" stroke-linecap="round" stroke-dasharray="${dash} ${C - dash}" stroke-dashoffset="0" style="transition: stroke-dasharray .8s cubic-bezier(.2,.8,.2,1);"/>`);
+  }
+  parts.push('</g>');
+  // Center percent
+  const moveRatio = goals.burned > 0 ? Math.round(((e.burned||0)/goals.burned)*100) : 0;
+  parts.push(`<text x="50" y="48" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="-apple-system, system-ui, sans-serif" font-weight="700">MOVE</text>`);
+  parts.push(`<text x="50" y="62" text-anchor="middle" font-size="14" fill="var(--text)" font-family="-apple-system, system-ui, sans-serif" font-weight="800">${moveRatio}%</text>`);
+  svg.innerHTML = parts.join('');
+
+  $('#ringsLegend').innerHTML = rings.map(r => {
+    const pct = r.goal > 0 ? Math.round((r.val / r.goal) * 100) : 0;
+    return `<div class="ring-item">
+      <span class="name"><span class="dot" style="background:${r.dot}"></span>${r.name} · ${pct}%</span>
+      <span class="val">${Math.round(r.val)}<span class="goal"> / ${r.goal} ${r.name === 'Steps' ? '' : (r.name === 'Protein' ? 'g' : 'kcal')}</span></span>
+    </div>`;
+  }).join('');
+}
+
+// ====================== DAILY FORM ======================
+const dailyFields = ['weight','calories','burned','protein','carbs','fats','steps'];
+
+function loadDailyForm(date) {
+  $('#d-date').value = date;
+  const entry = state.daily[date] || {};
+  dailyFields.forEach(f => $('#d-' + f).value = entry[f] ?? '');
+  state.lastViewedDate = date;
+  save();
+  renderRings();
+  renderDailySnapshot();
+}
+
+function saveDaily() {
+  const date = $('#d-date').value;
+  if (!date) { showToast('Pick a date'); return; }
+  const entry = {};
+  let any = false;
+  dailyFields.forEach(f => { const v = num($('#d-' + f).value); if (v !== null) { entry[f] = v; any = true; } });
+  if (any) state.daily[date] = entry;
+  else delete state.daily[date];
+  save();
+  haptic(12);
+  showToast('Saved ' + fmtDate(date));
+  renderRings();
+  renderDailySnapshot();
+  renderDailyList();
+  updateStreakUI();
+  checkAchievementsUI();
+  renderAllCharts();
+}
+
+function clearDaily() {
+  const date = $('#d-date').value;
+  delete state.daily[date];
+  save();
+  dailyFields.forEach(f => $('#d-' + f).value = '');
+  renderRings(); renderDailySnapshot(); renderDailyList(); updateStreakUI(); renderAllCharts();
+  haptic(20);
+  showToast('Cleared ' + fmtDate(date));
+}
+
+// Returns YYYY-MM-DD strings for Monday → Sunday of the week containing `date` (default today)
+function weekDays(refDate) {
+  const d = refDate ? new Date(refDate + 'T12:00:00') : new Date();
+  d.setHours(12,0,0,0);
+  // JS Sunday=0..Saturday=6 — convert so Monday=0..Sunday=6
+  const dow = (d.getDay() + 6) % 7;
+  const monday = new Date(d); monday.setDate(d.getDate() - dow);
+  const out = [];
+  for (let i = 0; i < 7; i++) {
+    const x = new Date(monday); x.setDate(monday.getDate() + i);
+    out.push(`${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,'0')}-${String(x.getDate()).padStart(2,'0')}`);
+  }
+  return out;
+}
+
+// Daily deficit = (calorie goal + calories burned) - calories consumed.
+// Positive = under target (good). Returns null when day has no calorie data at all.
+function dailyDeficit(person, dateStr) {
+  const e = (person.daily || {})[dateStr];
+  if (!e) return null;
+  const goalCals = (person.profile?.goals?.calories) ?? DEFAULT_GOALS.calories;
+  const consumed = e.calories;
+  const burned = e.burned || 0;
+  if (consumed == null && !e.burned) return null;
+  if (consumed == null) return burned; // only burn logged
+  return (goalCals + burned) - consumed;
+}
+
+function weeklyDeficit(person, refDate) {
+  const days = weekDays(refDate);
+  let sum = 0, logged = 0;
+  const perDay = days.map(d => {
+    const v = dailyDeficit(person, d);
+    if (v != null) { sum += v; logged++; }
+    return { date: d, value: v };
+  });
+  return { sum, logged, perDay, days };
+}
+
+function renderWeeklyDeficit() {
+  const card = $('#weeklyDeficitCard'); if (!card) return;
+  const today = todayStr();
+  const wk = weeklyDeficit({ daily: state.daily, profile: state.profile }, today);
+  const big = $('#deficitBig'), bars = $('#deficitBars'), meta = $('#deficitMeta'), foot = $('#deficitFoot');
+  const sign = wk.sum >= 0 ? '−' : '+'; // a positive "deficit" reads as a negative net
+  const abs = Math.abs(Math.round(wk.sum));
+  big.innerHTML = `${sign}${abs.toLocaleString()}<span style="font-size:18px;color:var(--muted);font-weight:600;margin-left:4px">kcal</span>`;
+  card.classList.toggle('surplus', wk.sum < 0);
+
+  const dowShort = ['M','T','W','T','F','S','S'];
+  const todayIdx = wk.days.indexOf(today);
+  // Bar scale: max abs across week
+  const maxAbs = Math.max(500, ...wk.perDay.map(p => Math.abs(p.value || 0)));
+  bars.innerHTML = wk.perDay.map((p, i) => {
+    const v = p.value || 0;
+    const pct = Math.min(100, Math.abs(v) / maxAbs * 100);
+    const cls = (v < 0 ? 'neg' : '') + (i === todayIdx ? ' today' : '');
+    const tip = p.value == null ? 'No log' : `${p.value > 0 ? '−' : '+'}${Math.abs(Math.round(p.value))} kcal`;
+    return `<div class="day ${cls}" title="${tip}">
+      <div class="fill" style="height:${pct}%"></div>
+      <span class="lbl-day">${dowShort[i]}</span>
+    </div>`;
+  }).join('');
+
+  const avg = wk.logged ? Math.round(wk.sum / wk.logged) : 0;
+  const goalCals = state.profile?.goals?.calories ?? DEFAULT_GOALS.calories;
+  meta.innerHTML = `<div><strong>${wk.logged}/7</strong> days logged</div>
+    <div>Avg: <strong>${avg >= 0 ? '−' : '+'}${Math.abs(avg).toLocaleString()}</strong> kcal/day</div>`;
+
+  // Lbs estimate (3500 kcal ≈ 1 lb)
+  const lbs = wk.sum / 3500;
+  const lbsTxt = wk.sum >= 0
+    ? `≈ ${lbs.toFixed(2)} lb lost so far this week`
+    : `≈ ${Math.abs(lbs).toFixed(2)} lb gained so far this week`;
+  foot.innerHTML = `${lbsTxt} · Daily = (goal ${goalCals.toLocaleString()} + burned − eaten). Resets Monday.`;
+}
+
+function renderDailySnapshot() {
+  const date = $('#d-date').value || todayStr();
+  const e = state.daily[date] || {};
+  const dates = Object.keys(state.daily).sort();
+  const idx = dates.indexOf(date);
+  const prev = idx > 0 ? state.daily[dates[idx-1]] : null;
+
+  const items = [
+    { label: 'Weight', val: e.weight, unit: 'lbs', prev: prev?.weight, color: 'var(--c-weight)' },
+    { label: 'Cal in', val: e.calories, unit: 'kcal', prev: prev?.calories, color: 'var(--c-cal)' },
+    { label: 'Burned', val: e.burned, unit: 'kcal', prev: prev?.burned, color: 'var(--c-burn)' },
+    { label: 'Steps', val: e.steps, unit: '', prev: prev?.steps, color: 'var(--c-steps)' },
+    { label: 'Protein', val: e.protein, unit: 'g', prev: prev?.protein, color: 'var(--c-protein)' },
+    { label: 'Carbs', val: e.carbs, unit: 'g', prev: prev?.carbs, color: 'var(--c-carbs)' },
+    { label: 'Fats', val: e.fats, unit: 'g', prev: prev?.fats, color: 'var(--c-fats)' },
+    { label: 'Net cal', val: (e.calories!=null && e.burned!=null) ? (e.calories - e.burned) : null, unit: 'kcal', color: '#a78bfa' }
+  ];
+  $('#dailySnapshot').innerHTML = items.map(it => {
+    const v = it.val == null ? '—' : Math.round(it.val * 10)/10;
+    let delta = '';
+    if (it.prev != null && it.val != null) {
+      const d = Math.round((it.val - it.prev)*10)/10;
+      if (Math.abs(d) > 0.01) {
+        const negativeMetric = ['Weight','Cal in','Carbs','Fats'].includes(it.label);
+        const cls = (d > 0 ? (negativeMetric ? 'down' : 'up') : (negativeMetric ? 'up' : 'down'));
+        delta = `<span class="delta ${cls}">${d>0?'▲':'▼'} ${Math.abs(d)}</span>`;
+      }
+    }
+    return `<div class="tile">
+      <span class="lbl"><span class="swatch" style="background:${it.color}"></span>${it.label}</span>
+      <span class="val countup">${v}<span class="u">${it.unit}</span></span>
+      ${delta}
+    </div>`;
+  }).join('');
+  // Keep the weekly deficit in sync with daily edits
+  try { renderWeeklyDeficit(); } catch (e) { console.warn('deficit render failed', e); }
+}
+
+function renderDailyList() {
+  const dates = Object.keys(state.daily).sort().reverse().slice(0, 14);
+  if (!dates.length) { $('#dailyList').innerHTML = `<div class="empty">No entries yet. Log your first day above.</div>`; return; }
+  $('#dailyList').innerHTML = dates.map(d => {
+    const e = state.daily[d];
+    const bits = [];
+    if (e.weight != null) bits.push(`${e.weight}lb`);
+    if (e.calories != null) bits.push(`${e.calories}kcal`);
+    if (e.protein != null) bits.push(`${e.protein}P`);
+    if (e.carbs != null) bits.push(`${e.carbs}C`);
+    if (e.fats != null) bits.push(`${e.fats}F`);
+    if (e.steps != null) bits.push(`${e.steps}👟`);
+    return `<div class="row-item" data-date="${d}">
+      <div>
+        <div><strong>${fmtDateLong(d)}</strong></div>
+        <div class="meta">${bits.join(' · ') || '—'}</div>
+      </div>
+      <div class="actions">
+        <button class="iconbtn" data-action="edit" aria-label="Edit">✎</button>
+        <button class="iconbtn" data-action="delete" aria-label="Delete">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+  $$('#dailyList .iconbtn').forEach(b => b.addEventListener('click', e => {
+    const date = e.currentTarget.closest('.row-item').dataset.date;
+    const action = e.currentTarget.dataset.action;
+    if (action === 'edit') { loadDailyForm(date); switchTab('today'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    else if (action === 'delete') {
+      if (confirm('Delete entry for ' + fmtDate(date) + '?')) {
+        delete state.daily[date]; save();
+        renderDailyList(); renderDailySnapshot(); renderRings(); updateStreakUI(); renderAllCharts();
+      }
+    }
+  }));
+}
+
+// ====================== WORKOUTS ======================
+function isPR(date, exercise, weight, reps) {
+  // PR = highest est 1RM up to (but not including) this set
+  const past = state.workouts.filter(w => w.exercise === exercise && (w.date < date || (w.date === date && true)));
+  if (!past.length) return true;
+  const best = Math.max(...past.map(w => epley(w.weight, w.reps)));
+  return epley(weight, reps) > best + 0.001;
+}
+
+function addSet() {
+  const date = $('#w-date').value;
+  const exRaw = $('#w-exercise').value.trim();
+  const weight = num($('#w-weight').value);
+  const reps = num($('#w-reps').value);
+  if (!date || !exRaw || weight == null || reps == null) { showToast('Fill in all fields'); return; }
+  const exercise = titleCase(exRaw);
+  // PR detection BEFORE adding
+  const wasPR = isPR(date, exercise, weight, reps);
+  state.workouts.push({ id: cryptoId(), date, exercise, weight, reps, ts: Date.now() });
+  save();
+  $('#w-weight').value = '';
+  $('#w-reps').value = '';
+  haptic(15);
+  if (wasPR) {
+    showToast(`🏆 PR! ${exercise} ${weight}×${reps}`, { pr: true, duration: 2400 });
+    fireConfetti();
+  } else {
+    showToast(`Added ${exercise} ${weight}×${reps}`);
+  }
+  renderWorkouts(); renderQuickExercises(); renderExerciseDatalist();
+  populateProgressExercises(); updateStreakUI(); checkAchievementsUI();
+  renderAllCharts();
+}
+
+function renderQuickExercises() {
+  const recent = [...new Set(state.workouts.slice().reverse().map(w => w.exercise))].slice(0, 8);
+  const seeds = ['Bench Press','Squat','Deadlift','Pull Up','Overhead Press','Row'];
+  const list = recent.length ? recent : seeds;
+  $('#quickExercises').innerHTML = list.map(ex =>
+    `<span class="chip" data-ex="${escapeHtml(ex)}">${escapeHtml(ex)}</span>`
+  ).join('');
+  $$('#quickExercises .chip').forEach(c => c.addEventListener('click', () => {
+    $('#w-exercise').value = c.dataset.ex; $('#w-weight').focus(); haptic(6);
+  }));
+}
+
+function renderExerciseDatalist() {
+  const list = [...new Set(state.workouts.map(w => w.exercise))].sort();
+  $('#exerciseList').innerHTML = list.map(e => `<option value="${escapeHtml(e)}">`).join('');
+}
+
+function renderWorkouts() {
+  const today = todayStr();
+  const todaySets = state.workouts.filter(w => w.date === today).sort((a,b) => a.ts - b.ts);
+  if (!todaySets.length) {
+    $('#todaySets').innerHTML = `<div class="empty">No sets logged today. Get after it 💪</div>`;
+  } else {
+    // group by exercise
+    const groups = {};
+    todaySets.forEach(s => (groups[s.exercise] = groups[s.exercise] || []).push(s));
+    $('#todaySets').innerHTML = Object.keys(groups).map(ex => {
+      const sets = groups[ex];
+      return `<div class="row-item" style="display:block">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px">
+          <strong>${escapeHtml(ex)}</strong>
+          <span class="meta">${sets.length} set${sets.length>1?'s':''}</span>
+        </div>
+        <div class="list" style="gap:4px">${sets.map((s,i) => `
+          <div class="row-item" data-id="${s.id}" style="padding:8px 10px">
+            <div><span class="meta">Set ${i+1}</span> · <strong>${s.weight}</strong> lbs × <strong>${s.reps}</strong> reps · <span class="meta">est ${Math.round(epley(s.weight,s.reps))} 1RM</span></div>
+            <button class="iconbtn" data-action="delete" aria-label="Delete">🗑</button>
+          </div>`).join('')}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // History (other days)
+  const others = state.workouts.filter(w => w.date !== today);
+  if (!others.length) {
+    $('#workoutList').innerHTML = `<div class="empty">No past sessions yet.</div>`;
+  } else {
+    const byDate = {};
+    others.forEach(w => (byDate[w.date] = byDate[w.date] || []).push(w));
+    const dates = Object.keys(byDate).sort().reverse().slice(0, 30);
+    $('#workoutList').innerHTML = dates.map(d => {
+      const sets = byDate[d];
+      const total = sets.reduce((s, x) => s + x.weight * x.reps, 0);
+      return `<details style="background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:14px;padding:10px 14px;margin-bottom:8px">
+        <summary style="cursor:pointer;font-weight:600;display:flex;justify-content:space-between;align-items:center">
+          <span>${fmtDateLong(d)}</span>
+          <span class="meta">${sets.length} sets · ${total.toLocaleString()} vol</span>
+        </summary>
+        <div class="list" style="margin-top:8px">${sets.map(s => `
+          <div class="row-item" data-id="${s.id}" style="padding:8px 10px">
+            <div><strong>${escapeHtml(s.exercise)}</strong> · ${s.weight} × ${s.reps} <span class="meta">· 1RM ${Math.round(epley(s.weight,s.reps))}</span></div>
+            <button class="iconbtn" data-action="delete" aria-label="Delete">🗑</button>
+          </div>`).join('')}</div>
+      </details>`;
+    }).join('');
+  }
+
+  // Wire delete buttons
+  $$('#todaySets .iconbtn[data-action="delete"], #workoutList .iconbtn[data-action="delete"]').forEach(b => {
+    b.addEventListener('click', e => {
+      const id = e.currentTarget.closest('.row-item').dataset.id;
+      if (confirm('Delete this set?')) {
+        state.workouts = state.workouts.filter(w => w.id !== id);
+        save();
+        renderWorkouts(); renderQuickExercises(); renderExerciseDatalist();
+        populateProgressExercises(); updateStreakUI(); renderAllCharts();
+      }
+    });
+  });
+}
+
+// ====================== CHARTS (custom SVG) ======================
+function svgEl(tag, attrs={}) {
+  const e = document.createElementNS('http://www.w3.org/2000/svg', tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  return e;
+}
+
+function renderLineChart(container, datasets /* [{ label, color, gradId, data: [{x:label, y:num}], dashed }] */, opts={}) {
+  // datasets share x labels (all use the same label set in order)
+  const W = 720, H = 220;
+  const padL = 36, padR = 14, padT = 14, padB = 28;
+  // Determine common x labels (use first dataset's labels)
+  const labels = datasets[0]?.data.map(p => p.x) || [];
+  // Compute y range
+  let yMin = Infinity, yMax = -Infinity;
+  datasets.forEach(ds => ds.data.forEach(p => { if (p.y != null) { yMin = Math.min(yMin, p.y); yMax = Math.max(yMax, p.y); } }));
+  if (yMin === Infinity) { yMin = 0; yMax = 1; }
+  if (yMin === yMax) { yMin -= 1; yMax += 1; }
+  const yPad = (yMax - yMin) * 0.12;
+  yMin -= yPad; yMax += yPad;
+  if (opts.zeroBased) yMin = Math.min(0, yMin);
+
+  const xToPx = i => labels.length === 1 ? (padL + (W - padL - padR)/2) : padL + (i / (labels.length - 1)) * (W - padL - padR);
+  const yToPx = v => padT + (1 - (v - yMin)/(yMax - yMin)) * (H - padT - padB);
+
+  let s = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="${escapeHtml(opts.title||'chart')}">`;
+  // Y grid lines
+  const ticks = 4;
+  for (let i = 0; i <= ticks; i++) {
+    const y = padT + (i/ticks) * (H - padT - padB);
+    const v = yMax - (i/ticks) * (yMax - yMin);
+    s += `<line x1="${padL}" x2="${W-padR}" y1="${y}" y2="${y}" stroke="rgba(255,255,255,.06)" stroke-dasharray="2 4"/>`;
+    s += `<text x="${padL-6}" y="${y+4}" font-size="10" fill="#7a8298" text-anchor="end">${formatTick(v)}</text>`;
+  }
+  // X labels (sample)
+  const labelEvery = Math.max(1, Math.ceil(labels.length / 6));
+  labels.forEach((lab, i) => {
+    if (i % labelEvery !== 0 && i !== labels.length - 1) return;
+    const x = xToPx(i);
+    s += `<text x="${x}" y="${H - 8}" font-size="10" fill="#7a8298" text-anchor="middle">${escapeHtml(lab)}</text>`;
+  });
+
+  datasets.forEach((ds, dsi) => {
+    // Build path skipping nulls
+    const pts = ds.data.map((p, i) => p.y == null ? null : ({ x: xToPx(i), y: yToPx(p.y) }));
+    let d = '';
+    let inSeg = false;
+    pts.forEach(p => {
+      if (!p) { inSeg = false; return; }
+      if (!inSeg) { d += `M${p.x.toFixed(1)} ${p.y.toFixed(1)}`; inSeg = true; }
+      else d += ` L${p.x.toFixed(1)} ${p.y.toFixed(1)}`;
+    });
+    if (!d) return;
+    // Fill area (only if first dataset and gradient available)
+    if (ds.gradId && dsi === 0) {
+      const firstPt = pts.find(p => p);
+      const lastPt = [...pts].reverse().find(p => p);
+      if (firstPt && lastPt) {
+        const fillD = d + ` L${lastPt.x.toFixed(1)} ${(H-padB).toFixed(1)} L${firstPt.x.toFixed(1)} ${(H-padB).toFixed(1)} Z`;
+        s += `<path d="${fillD}" fill="url(#${ds.gradId})" opacity=".7"/>`;
+      }
+    }
+    s += `<path d="${d}" fill="none" stroke="${ds.color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" ${ds.dashed?'stroke-dasharray="6 5"':''}/>`;
+    // Points
+    pts.forEach(p => { if (p) s += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3" fill="${ds.color}"/>`; });
+  });
+
+  // Animate stroke length
+  s += `</svg>`;
+  container.innerHTML = s;
+  // Animate paths (skip if getTotalLength unavailable, e.g. older renderers)
+  $$('path[fill="none"]', container).forEach(path => {
+    try {
+      if (typeof path.getTotalLength !== 'function') return;
+      const len = path.getTotalLength();
+      if (!len || !isFinite(len)) return;
+      path.style.strokeDasharray = len;
+      path.style.strokeDashoffset = len;
+      requestAnimationFrame(() => {
+        path.style.transition = 'stroke-dashoffset .9s ease';
+        path.style.strokeDashoffset = 0;
+      });
+    } catch {}
+  });
+  // Touch tooltip
+  setupChartTooltip(container, datasets, labels, xToPx, yToPx, padL, padR, padT, padB, W, H);
+}
+
+function formatTick(v) {
+  const abs = Math.abs(v);
+  if (abs >= 1000) return (v/1000).toFixed(abs >= 10000 ? 0 : 1) + 'k';
+  if (abs < 10) return Math.round(v*10)/10;
+  return Math.round(v);
+}
+
+function setupChartTooltip(container, datasets, labels, xToPx, yToPx, padL, padR, padT, padB, W, H) {
+  const svg = $('svg', container);
+  if (!svg) return;
+  const tooltip = document.createElement('div');
+  tooltip.style.cssText = `position:absolute;background:rgba(20,24,55,.96);border:1px solid var(--border-strong);border-radius:10px;padding:8px 10px;font-size:11.5px;pointer-events:none;opacity:0;transition:opacity .15s;backdrop-filter:blur(8px);min-width:90px;z-index:5;color:var(--text);box-shadow:var(--shadow-1);`;
+  container.style.position = 'relative';
+  container.appendChild(tooltip);
+  const cursor = svgEl('line', { y1: padT, y2: H - padB, stroke: 'rgba(255,255,255,.2)', 'stroke-width': 1, opacity: 0 });
+  svg.appendChild(cursor);
+
+  const handle = (clientX) => {
+    const rect = svg.getBoundingClientRect();
+    const xRel = (clientX - rect.left) / rect.width * W;
+    if (labels.length === 0) return;
+    let bestI = 0, bestDist = Infinity;
+    for (let i = 0; i < labels.length; i++) {
+      const px = xToPx(i);
+      const d = Math.abs(px - xRel);
+      if (d < bestDist) { bestDist = d; bestI = i; }
+    }
+    const px = xToPx(bestI);
+    cursor.setAttribute('x1', px);
+    cursor.setAttribute('x2', px);
+    cursor.setAttribute('opacity', 1);
+    let html = `<div style="font-weight:700;color:var(--muted);margin-bottom:4px">${escapeHtml(labels[bestI])}</div>`;
+    datasets.forEach(ds => {
+      const v = ds.data[bestI]?.y;
+      if (v == null) return;
+      html += `<div style="display:flex;justify-content:space-between;gap:10px"><span style="color:${ds.color}">●</span><span style="color:var(--muted)">${escapeHtml(ds.label)}</span><span style="font-weight:700">${formatTick(v)}</span></div>`;
+    });
+    tooltip.innerHTML = html;
+    tooltip.style.opacity = 1;
+    // Position tooltip
+    const tooltipX = (px / W) * rect.width;
+    const containerW = container.clientWidth;
+    tooltip.style.top = `8px`;
+    const tx = clamp(tooltipX - 50, 6, containerW - 110);
+    tooltip.style.left = tx + 'px';
+  };
+  const end = () => { tooltip.style.opacity = 0; cursor.setAttribute('opacity', 0); };
+  svg.addEventListener('pointermove', e => handle(e.clientX));
+  svg.addEventListener('pointerleave', end);
+}
+
+function renderBarChart(container, data /* [{x, y}] */, color, opts={}) {
+  const W = 720, H = 200;
+  const padL = 36, padR = 14, padT = 14, padB = 28;
+  if (!data.length) { container.innerHTML = `<div class="empty">Not enough data yet.</div>`; return; }
+  let yMax = Math.max(...data.map(d => d.y || 0), 1);
+  yMax *= 1.1;
+  const bw = (W - padL - padR) / data.length * 0.7;
+  const step = (W - padL - padR) / data.length;
+  let s = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">`;
+  for (let i = 0; i <= 4; i++) {
+    const y = padT + (i/4)*(H - padT - padB);
+    const v = yMax - (i/4)*yMax;
+    s += `<line x1="${padL}" x2="${W-padR}" y1="${y}" y2="${y}" stroke="rgba(255,255,255,.06)" stroke-dasharray="2 4"/>`;
+    s += `<text x="${padL-6}" y="${y+4}" font-size="10" fill="#7a8298" text-anchor="end">${formatTick(v)}</text>`;
+  }
+  data.forEach((d, i) => {
+    const x = padL + step * i + (step - bw)/2;
+    const h = ((d.y || 0) / yMax) * (H - padT - padB);
+    const y = (H - padB) - h;
+    s += `<rect x="${x}" y="${H-padB}" width="${bw}" height="0" rx="3" fill="${color}" data-target="${h}" data-y="${y}" opacity=".95">
+      <animate attributeName="height" from="0" to="${h}" dur=".7s" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" />
+      <animate attributeName="y" from="${H-padB}" to="${y}" dur=".7s" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" />
+    </rect>`;
+    if (i % Math.max(1, Math.ceil(data.length/6)) === 0 || i === data.length-1) {
+      s += `<text x="${x + bw/2}" y="${H-8}" font-size="10" fill="#7a8298" text-anchor="middle">${escapeHtml(d.x)}</text>`;
+    }
+  });
+  s += `</svg>`;
+  container.innerHTML = s;
+}
+
+function renderProgressionChart() {
+  const ex = $('#p-exercise').value;
+  const wrap = $('#chart-exercise-wrap');
+  const sets = state.workouts.filter(w => w.exercise === ex);
+  if (!sets.length || !ex) { wrap.innerHTML = `<div class="empty">No sets for this exercise yet.</div>`; $('#prSummary').innerHTML = ''; return; }
+  // Heaviest per date
+  const byDate = {};
+  sets.forEach(s => {
+    const cur = byDate[s.date];
+    if (!cur || s.weight > cur.weight || (s.weight === cur.weight && s.reps > cur.reps)) byDate[s.date] = s;
+  });
+  const dates = Object.keys(byDate).sort();
+  const data = dates.map(d => ({ x: fmtDate(d), y: byDate[d].weight }));
+  const data1RM = dates.map(d => ({ x: fmtDate(d), y: Math.round(epley(byDate[d].weight, byDate[d].reps)) }));
+  renderLineChart(wrap, [
+    { label: 'Heaviest set (lbs)', color: '#ff6b35', gradId: 'gPR', data },
+    { label: 'Est. 1RM', color: '#7c5cff', data: data1RM, dashed: true }
+  ], { title: 'Lift progression' });
+
+  const allWeights = sets.map(s => s.weight);
+  const maxW = Math.max(...allWeights);
+  const max1rm = Math.max(...sets.map(s => epley(s.weight, s.reps)));
+  const totalSets = sets.length;
+  $('#prSummary').innerHTML = `
+    <div class="tile"><span class="lbl">Top set</span><span class="val countup">${maxW}<span class="u">lbs</span></span></div>
+    <div class="tile"><span class="lbl">Est. 1RM</span><span class="val countup">${Math.round(max1rm)}<span class="u">lbs</span></span></div>
+    <div class="tile"><span class="lbl">Sets</span><span class="val countup">${totalSets}<span class="u"></span></span></div>
+  `;
+}
+
+function dailySeries(field) {
+  const dates = Object.keys(state.daily).sort();
+  return { dates, values: dates.map(d => state.daily[d][field] ?? null) };
+}
+
+function renderWeightChart() {
+  const wrap = $('#chart-weight-wrap');
+  const { dates, values } = dailySeries('weight');
+  const data = dates.map((d,i) => ({ x: fmtDate(d), y: values[i] })).filter(p => p.y != null);
+  if (!data.length) { wrap.innerHTML = `<div class="empty">Log weight to see your trend.</div>`; return; }
+  renderLineChart(wrap, [{ label: 'Weight (lbs)', color: '#5fa8ff', gradId: 'gWeight', data }]);
+}
+
+function renderCaloriesChart() {
+  const wrap = $('#chart-calories-wrap');
+  const dates = Object.keys(state.daily).sort();
+  if (!dates.length) { wrap.innerHTML = `<div class="empty">Log meals to see this chart.</div>`; return; }
+  const cal = dates.map(d => ({ x: fmtDate(d), y: state.daily[d].calories ?? null }));
+  const burn = dates.map(d => ({ x: fmtDate(d), y: state.daily[d].burned ?? null }));
+  renderLineChart(wrap, [
+    { label: 'In', color: 'var(--c-cal)', gradId: 'gPR', data: cal },
+    { label: 'Burned', color: 'var(--c-burn)', data: burn, dashed: true }
+  ]);
+}
+
+function renderMacrosChart() {
+  const wrap = $('#chart-macros-wrap');
+  const dates = Object.keys(state.daily).sort();
+  if (!dates.length) { wrap.innerHTML = `<div class="empty">Log macros to see this chart.</div>`; return; }
+  const protein = dates.map(d => ({ x: fmtDate(d), y: state.daily[d].protein ?? null }));
+  const carbs = dates.map(d => ({ x: fmtDate(d), y: state.daily[d].carbs ?? null }));
+  const fats = dates.map(d => ({ x: fmtDate(d), y: state.daily[d].fats ?? null }));
+  renderLineChart(wrap, [
+    { label: 'Protein', color: 'var(--c-protein)', data: protein },
+    { label: 'Carbs', color: 'var(--c-carbs)', data: carbs },
+    { label: 'Fats', color: 'var(--c-fats)', data: fats }
+  ]);
+}
+
+function renderStepsChart() {
+  const wrap = $('#chart-steps-wrap');
+  const { dates, values } = dailySeries('steps');
+  const data = dates.map((d,i) => ({ x: fmtDate(d), y: values[i] })).filter(p => p.y != null);
+  if (!data.length) { wrap.innerHTML = `<div class="empty">Log steps to see this chart.</div>`; return; }
+  renderBarChart(wrap, data, 'url(#gSteps)');
+}
+
+function populateProgressExercises() {
+  const sel = $('#p-exercise');
+  const list = [...new Set(state.workouts.map(w => w.exercise))].sort();
+  const cur = sel.value;
+  sel.innerHTML = list.length
+    ? list.map(e => `<option value="${escapeHtml(e)}">${escapeHtml(e)}</option>`).join('')
+    : `<option value="">No exercises yet</option>`;
+  if (list.includes(cur)) sel.value = cur;
+}
+
+function renderAllCharts() {
+  if ($('#tab-progress').classList.contains('hidden')) return;
+  populateProgressExercises();
+  renderProgressionChart();
+  renderWeightChart();
+  renderCaloriesChart();
+  renderMacrosChart();
+  renderStepsChart();
+  renderBadges();
+}
+
+// ====================== ACHIEVEMENTS ======================
+const ACHIEVEMENTS = [
+  { key: 'first_log', name: 'First step', emoji: '👟', desc: 'Log your first day or workout', test: s => Object.keys(s.daily).length + s.workouts.length >= 1 },
+  { key: 'streak_3', name: '3-day fire', emoji: '🔥', desc: '3-day streak', test: s => streakOf(s) >= 3 },
+  { key: 'streak_7', name: 'Week warrior', emoji: '⚡️', desc: '7-day streak', test: s => streakOf(s) >= 7 },
+  { key: 'streak_30', name: 'Iron habit', emoji: '🛡', desc: '30-day streak', test: s => streakOf(s) >= 30 },
+  { key: 'workouts_10', name: 'Set monster', emoji: '🏋️', desc: '10 sets logged', test: s => s.workouts.length >= 10 },
+  { key: 'workouts_100', name: 'Centurion', emoji: '🏛', desc: '100 sets logged', test: s => s.workouts.length >= 100 },
+  { key: 'protein_goal', name: 'Macro master', emoji: '💪', desc: 'Hit protein goal', test: s => Object.values(s.daily).some(d => d.protein != null && d.protein >= s.profile.goals.protein) },
+  { key: 'steps_10k', name: '10k club', emoji: '👟', desc: '10,000 steps in a day', test: s => Object.values(s.daily).some(d => (d.steps||0) >= 10000) },
+  { key: 'pr_first', name: 'New PR', emoji: '🏆', desc: 'First personal record', test: s => s.workouts.length >= 1 }, // first set is always a PR
+  { key: 'all_macros', name: 'Tracker', emoji: '🎯', desc: 'Log all 7 fields in a day', test: s => Object.values(s.daily).some(d => ['weight','calories','burned','protein','carbs','fats','steps'].every(k => d[k] != null)) },
+  { key: 'log_30', name: 'Steady', emoji: '📅', desc: 'Log 30 different days', test: s => Object.keys(s.daily).length >= 30 },
+  { key: 'big_burn', name: 'Furnace', emoji: '🌋', desc: 'Burn 1000 kcal in a day', test: s => Object.values(s.daily).some(d => (d.burned||0) >= 1000) }
+];
+
+function checkAchievementsUI() {
+  let newly = [];
+  ACHIEVEMENTS.forEach(a => {
+    if (!state.achievements[a.key] && a.test(state)) {
+      state.achievements[a.key] = todayStr();
+      newly.push(a);
+    }
+  });
+  if (newly.length) {
+    save();
+    newly.forEach((a, i) => setTimeout(() => {
+      showToast(`${a.emoji} Unlocked: ${a.name}`, { pr: true });
+      fireConfetti();
+    }, i * 1200));
+  }
+  renderBadges();
+}
+
+function renderBadges() {
+  const grid = $('#badgeGrid');
+  if (!grid) return;
+  grid.innerHTML = ACHIEVEMENTS.map(a => {
+    const unlocked = !!state.achievements[a.key];
+    return `<div class="badge ${unlocked ? 'unlocked' : 'locked'}" title="${escapeHtml(a.desc)}">
+      <div>${a.emoji}</div>
+      <div class="lbl">${escapeHtml(a.name)}</div>
+    </div>`;
+  }).join('');
+}
+
+// ====================== CONFETTI ======================
+function fireConfetti() {
+  const cv = $('#confetti');
+  if (!cv) return;
+  const ctx = cv.getContext && cv.getContext('2d');
+  if (!ctx) return;
+  cv.width = innerWidth * devicePixelRatio;
+  cv.height = innerHeight * devicePixelRatio;
+  cv.style.width = innerWidth + 'px';
+  cv.style.height = innerHeight + 'px';
+  ctx.scale(devicePixelRatio, devicePixelRatio);
+  const colors = ['#ff6b35','#ff4d8d','#7c5cff','#2ee59d','#f5c518','#5fa8ff'];
+  const N = 80;
+  const parts = Array.from({length: N}, () => ({
+    x: innerWidth/2 + (Math.random()-.5)*40,
+    y: innerHeight/2 + (Math.random()-.5)*20,
+    vx: (Math.random()-.5)*10,
+    vy: -Math.random()*15 - 6,
+    g: 0.45 + Math.random()*.2,
+    rot: Math.random()*Math.PI,
+    vr: (Math.random()-.5)*.4,
+    s: 6 + Math.random()*6,
+    c: colors[Math.floor(Math.random()*colors.length)],
+    life: 60 + Math.random()*40
+  }));
+  let frame = 0;
+  function tick() {
+    ctx.clearRect(0,0,innerWidth,innerHeight);
+    let alive = false;
+    for (const p of parts) {
+      if (p.life <= 0) continue;
+      alive = true;
+      p.x += p.vx; p.y += p.vy; p.vy += p.g; p.rot += p.vr; p.life -= 1;
+      ctx.save();
+      ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+      ctx.fillStyle = p.c; ctx.globalAlpha = clamp(p.life / 50, 0, 1);
+      ctx.fillRect(-p.s/2, -p.s/3, p.s, p.s*0.6);
+      ctx.restore();
+    }
+    frame++;
+    if (alive && frame < 200) requestAnimationFrame(tick);
+    else ctx.clearRect(0,0,cv.width,cv.height);
+  }
+  tick();
+}
+
+// ====================== TABS ======================
+const TABS = ['today','workouts','progress','friends'];
+function switchTab(name) {
+  TABS.forEach(t => $('#tab-' + t).classList.toggle('hidden', t !== name));
+  $$('nav.tabs button').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+  if (name === 'progress') renderAllCharts();
+  if (name === 'friends') { renderFriends(); pullAllFriends(); }
+  haptic(5);
+  window.scrollTo({ top: 0 });
+}
+$$('nav.tabs button').forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
+
+// ====================== WELCOME / FIRST-RUN SHEET ======================
+function openWelcomeSheet(opts = {}) {
+  const p = state.profile;
+  const title = opts.title || 'Welcome to Pulse 🔥';
+  const body = opts.body || "Let's set up your profile so friends know who you are.";
+  openSheet(`
+    <h3>${escapeHtml(title)}</h3>
+    <p class="small">${escapeHtml(body)}</p>
+    <label class="fld">Your name</label>
+    <input class="input" id="wf-name" value="${escapeHtml(p.name === 'You' ? '' : (p.name || ''))}" placeholder="e.g. Luke" autofocus />
+    <div style="height:10px"></div>
+    <label class="fld">Pick an emoji</label>
+    <div class="scroll-x" id="wf-emoji">${EMOJIS.map(e => `<span class="chip ${e===p.emoji?'active':''}" data-em="${e}">${e}</span>`).join('')}</div>
+    <div style="height:10px"></div>
+    <label class="fld">Pick a color</label>
+    <div class="scroll-x" id="wf-color">${AVATAR_PALETTE.map(c => `<span class="chip ${c===p.color?'active':''}" data-c="${c}" style="background:${c === p.color ? c : 'rgba(255,255,255,.05)'};color:${c===p.color?'#fff':c};border-color:${c}">●</span>`).join('')}</div>
+    <div style="height:14px"></div>
+    <button class="btn flame" id="wf-save">Save profile</button>
+  `);
+  $$('#wf-emoji .chip').forEach(c => c.addEventListener('click', () => {
+    $$('#wf-emoji .chip').forEach(x => x.classList.remove('active'));
+    c.classList.add('active');
+  }));
+  $$('#wf-color .chip').forEach(c => c.addEventListener('click', () => {
+    $$('#wf-color .chip').forEach(x => { x.classList.remove('active'); x.style.background = 'rgba(255,255,255,.05)'; x.style.color = x.dataset.c; });
+    c.classList.add('active'); c.style.background = c.dataset.c; c.style.color = '#fff';
+  }));
+  $('#wf-save').addEventListener('click', () => {
+    const name = $('#wf-name').value.trim();
+    if (!name || name.toLowerCase() === 'you') { showToast('Pick a real name'); return; }
+    state.profile.name = name;
+    state.profile.emoji = $('#wf-emoji .chip.active')?.dataset.em || state.profile.emoji || '💪';
+    state.profile.color = $('#wf-color .chip.active')?.dataset.c || state.profile.color || AVATAR_PALETTE[0];
+    save();
+    updateGreeting(); renderRings(); renderDailySnapshot && renderDailySnapshot();
+    closeSheet();
+    showToast(`Hi ${name}!`, { pr: true });
+    if (typeof opts.after === 'function') setTimeout(opts.after, 200);
+  });
+}
+
+// ====================== PROFILE SHEET ======================
+$('#profileBtn').addEventListener('click', openProfileSheet);
+function openProfileSheet() {
+  const p = state.profile;
+  const goals = p.goals;
+  openSheet(`
+    <h3>Your profile</h3>
+    <label class="fld">Name</label>
+    <input class="input" id="pf-name" value="${escapeHtml(p.name)}" />
+    <div style="height:10px"></div>
+    <label class="fld">Avatar</label>
+    <div class="scroll-x" id="emojiPick">${EMOJIS.map(e => `<span class="chip ${e===p.emoji?'active':''}" data-em="${e}">${e}</span>`).join('')}</div>
+    <div style="height:10px"></div>
+    <label class="fld">Color</label>
+    <div class="scroll-x" id="colorPick">${AVATAR_PALETTE.map(c => `<span class="chip ${c===p.color?'active':''}" data-c="${c}" style="background:${c === p.color ? c : 'rgba(255,255,255,.05)'};color:${c===p.color?'#fff':c};border-color:${c}">●</span>`).join('')}</div>
+    <hr style="border:0;border-top:1px solid var(--border);margin:14px 0"/>
+    <h3>Daily goals</h3>
+    <div class="grid c2">
+      <div><label class="fld">Calories</label><input class="input" type="number" id="g-calories" value="${goals.calories}"/></div>
+      <div><label class="fld">Burn</label><input class="input" type="number" id="g-burned" value="${goals.burned}"/></div>
+      <div><label class="fld">Protein g</label><input class="input" type="number" id="g-protein" value="${goals.protein}"/></div>
+      <div><label class="fld">Carbs g</label><input class="input" type="number" id="g-carbs" value="${goals.carbs}"/></div>
+      <div><label class="fld">Fats g</label><input class="input" type="number" id="g-fats" value="${goals.fats}"/></div>
+      <div><label class="fld">Steps</label><input class="input" type="number" id="g-steps" value="${goals.steps}"/></div>
+    </div>
+    <div style="height:14px"></div>
+    <button class="btn" id="pf-save">Save profile</button>
+  `);
+  $$('#emojiPick .chip').forEach(c => c.addEventListener('click', () => {
+    $$('#emojiPick .chip').forEach(x => x.classList.remove('active'));
+    c.classList.add('active');
+  }));
+  $$('#colorPick .chip').forEach(c => c.addEventListener('click', () => {
+    $$('#colorPick .chip').forEach(x => { x.classList.remove('active'); x.style.background = 'rgba(255,255,255,.05)'; x.style.color = x.dataset.c; });
+    c.classList.add('active'); c.style.background = c.dataset.c; c.style.color = '#fff';
+  }));
+  $('#pf-save').addEventListener('click', () => {
+    const name = $('#pf-name').value.trim() || 'You';
+    const em = $('#emojiPick .chip.active')?.dataset.em || '💪';
+    const col = $('#colorPick .chip.active')?.dataset.c || AVATAR_PALETTE[0];
+    state.profile.name = name;
+    state.profile.emoji = em;
+    state.profile.color = col;
+    ['calories','burned','protein','carbs','fats','steps'].forEach(k => {
+      const v = num($('#g-' + k).value);
+      if (v != null) state.profile.goals[k] = v;
+    });
+    save();
+    updateGreeting(); renderRings(); renderDailySnapshot();
+    closeSheet();
+    showToast('Profile saved');
+  });
+}
+
+// ====================== FRIENDS / SHARING ======================
+function snapshotForShare() {
+  // Strip down state to a friend snapshot (no friends-of-friends)
+  return {
+    profile: {
+      id: state.profile.id,
+      name: state.profile.name,
+      emoji: state.profile.emoji,
+      color: state.profile.color,
+      goals: state.profile.goals
+    },
+    daily: state.daily,
+    workouts: state.workouts.map(w => ({ id: w.id, date: w.date, exercise: w.exercise, weight: w.weight, reps: w.reps })),
+    achievements: state.achievements,
+    sharedAt: new Date().toISOString(),
+    v: 2
+  };
+}
+
+async function encodeSnapshot(snapshot) {
+  const json = JSON.stringify(snapshot);
+  if ('CompressionStream' in window) {
+    try {
+      const cs = new CompressionStream('gzip');
+      const stream = new Blob([json]).stream().pipeThrough(cs);
+      const buf = await new Response(stream).arrayBuffer();
+      return 'g:' + base64UrlEncode(new Uint8Array(buf));
+    } catch (e) { /* fall through */ }
+  }
+  return 'p:' + base64UrlEncode(new TextEncoder().encode(json));
+}
+
+async function decodeSnapshot(encoded) {
+  const [tag, body] = [encoded.slice(0,2), encoded.slice(2)];
+  const bytes = base64UrlDecode(body);
+  if (tag === 'g:') {
+    if (!('DecompressionStream' in window)) throw new Error('No DecompressionStream');
+    const ds = new DecompressionStream('gzip');
+    const stream = new Blob([bytes]).stream().pipeThrough(ds);
+    const buf = await new Response(stream).arrayBuffer();
+    return JSON.parse(new TextDecoder().decode(buf));
+  } else if (tag === 'p:') {
+    return JSON.parse(new TextDecoder().decode(bytes));
+  }
+  throw new Error('Bad encoding');
+}
+
+function base64UrlEncode(bytes) {
+  let bin = '';
+  for (const b of bytes) bin += String.fromCharCode(b);
+  return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+function base64UrlDecode(s) {
+  s = s.replace(/-/g, '+').replace(/_/g, '/');
+  while (s.length % 4) s += '=';
+  const bin = atob(s);
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+}
+
+async function makeShareLink() {
+  const snap = snapshotForShare();
+  const enc = await encodeSnapshot(snap);
+  const base = location.href.split('#')[0];
+  return `${base}#friend=${enc}`;
+}
+
+function profileNameLooksDefault() {
+  const n = (state.profile.name || '').trim().toLowerCase();
+  return !n || n === 'you';
+}
+
+$('#shareBtn').addEventListener('click', async () => {
+  if (profileNameLooksDefault()) {
+    openWelcomeSheet({
+      title: 'Set your name first',
+      body: "Before sharing, set a name your friends will recognize. Otherwise everyone you share with will see you as “You”.",
+      after: () => $('#shareBtn').click()
+    });
+    return;
+  }
+  try {
+    const url = await makeShareLink();
+    const sizeKB = Math.round(url.length / 1024 * 10) / 10;
+    const html = `
+      <h3>Share your stats</h3>
+      <p class="small">Send this link to a friend. They tap it once to add you, then your data <strong>auto-syncs</strong> — anytime you log new workouts or meals, their copy refreshes the next time they open Pulse. No need to re-share.</p>
+      <textarea class="input" id="shareUrl" rows="4" readonly style="font-size:12px">${url}</textarea>
+      <div style="height:8px"></div>
+      <div class="small">Link size: ~${sizeKB} KB</div>
+      <div style="height:12px"></div>
+      <div class="btn-row">
+        <button class="btn" id="copyShare">Copy link</button>
+        <button class="btn secondary" id="nativeShare">Share…</button>
+      </div>
+    `;
+    openSheet(html);
+    $('#copyShare').addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(url); showToast('Link copied'); haptic(10); }
+      catch { $('#shareUrl').select(); document.execCommand('copy'); showToast('Link copied'); }
+    });
+    $('#nativeShare').addEventListener('click', async () => {
+      if (navigator.share) {
+        try { await navigator.share({ title: `${state.profile.name}'s Pulse stats`, url, text: 'Check out my fitness progress on Pulse 💪' }); }
+        catch {}
+      } else { showToast('Share not supported here'); }
+    });
+  } catch (e) {
+    console.error(e); showToast('Could not generate link');
+  }
+});
+
+$('#addFriendBtn').addEventListener('click', () => {
+  openSheet(`
+    <h3>Add a friend</h3>
+    <p class="small">Two ways to add friends:</p>
+    <ol class="small" style="padding-left:20px;line-height:1.6">
+      <li><strong>Paste their share link</strong> below, or</li>
+      <li><strong>Import their exported JSON</strong> file</li>
+    </ol>
+    <label class="fld">Paste share link</label>
+    <textarea class="input" id="addFriendUrl" rows="3" placeholder="Paste a Pulse share link…"></textarea>
+    <div style="height:10px"></div>
+    <button class="btn" id="addFromUrlBtn">Add from link</button>
+    <div style="height:12px"></div>
+    <button class="btn secondary" id="addFromFileBtn">Import JSON file</button>
+    <input type="file" id="friendFile" accept="application/json,.json" class="hidden" />
+  `);
+  $('#addFromUrlBtn').addEventListener('click', async () => {
+    const text = $('#addFriendUrl').value.trim();
+    if (!text) { showToast('Paste a link first'); return; }
+    try {
+      const m = text.match(/#friend=([^&\s]+)/);
+      const enc = m ? m[1] : text; // allow raw payload too
+      const snap = await decodeSnapshot(enc);
+      addFriendFromSnapshot(snap);
+      closeSheet();
+    } catch (e) { console.error(e); showToast('Invalid share link'); }
+  });
+  $('#addFromFileBtn').addEventListener('click', () => $('#friendFile').click());
+  $('#friendFile').addEventListener('change', async (e) => {
+    const f = e.target.files[0]; if (!f) return;
+    try {
+      const text = await f.text();
+      const data = JSON.parse(text);
+      // accept either snapshot shape or full app shape
+      const snap = data.profile && data.daily ? data : { profile: { id: cryptoId(), name: f.name.replace(/\.json$/,''), emoji: '🤝', color: AVATAR_PALETTE[0], goals: DEFAULT_GOALS }, daily: data.daily || {}, workouts: data.workouts || [], achievements: data.achievements || {} };
+      addFriendFromSnapshot(snap);
+      closeSheet();
+    } catch (err) { console.error(err); showToast('Invalid file'); }
+  });
+});
+
+function addFriendFromSnapshot(snap, opts = {}) {
+  if (!snap || !snap.profile) { if (!opts.silent) showToast('Invalid snapshot'); return; }
+  if (snap.profile.id === state.profile.id) {
+    if (!opts.silent) showToast("That's you 😅"); return;
+  }
+  const id = snap.profile.id || cryptoId();
+  const existed = !!state.friends[id];
+  // If sender never set a name, fabricate a unique fallback so they don't show as "You"
+  let incomingName = (snap.profile.name || '').trim();
+  if (!incomingName || incomingName.toLowerCase() === 'you') {
+    // Preserve a custom name we may have set locally
+    const localName = state.friends[id]?.profile?.name;
+    if (localName && localName.toLowerCase() !== 'you' && !/^Friend [A-F0-9]{4}$/.test(localName)) {
+      incomingName = localName;
+    } else {
+      let candidate;
+      do {
+        candidate = 'Friend ' + id.slice(0, 4).toUpperCase();
+      } while (Object.values(state.friends).some(fr => fr.profile?.name === candidate && fr.profile?.id !== id));
+      incomingName = candidate;
+    }
+  } else if (existed && state.friends[id].profile?.name && state.friends[id].profile.name !== incomingName) {
+    // Don't overwrite a custom local rename with their default
+    const localName = state.friends[id].profile.name;
+    const looksCustom = localName.toLowerCase() !== 'you' && !/^Friend [A-F0-9]{4}$/.test(localName);
+    if (looksCustom) incomingName = localName;
+  }
+  state.friends[id] = {
+    profile: { ...snap.profile, id, name: incomingName },
+    daily: snap.daily || {},
+    workouts: (snap.workouts || []).map(w => ({ ...w, id: w.id || cryptoId() })),
+    achievements: snap.achievements || {},
+    lastSync: new Date().toISOString()
+  };
+  save({ skipPush: opts.skipPush });
+  if (!opts.silent) {
+    haptic(15);
+    if (existed) showToast(`Updated ${incomingName}`, { pr: true });
+    else { showToast(`Added ${incomingName}!`, { pr: true }); fireConfetti(); }
+    // If we had to rename them on first import, give the user a one-tap chance to fix it
+    if (!existed && incomingName !== (snap.profile.name || '').trim()) {
+      setTimeout(() => promptRenameFriend(id, `Heads up: this friend hadn't set a name yet, so we labeled them "${incomingName}". Want to rename them?`), 400);
+    }
+  }
+  renderFriends();
+}
+
+function promptRenameFriend(id, msg) {
+  const f = state.friends[id]; if (!f) return;
+  openSheet(`
+    <h3>Rename friend</h3>
+    <p class="small">${escapeHtml(msg || '')}</p>
+    <label class="fld">Name</label>
+    <input class="input" id="rn-name" value="${escapeHtml(f.profile.name || '')}" />
+    <div style="height:12px"></div>
+    <button class="btn" id="rn-save">Save</button>
+    <div style="height:8px"></div>
+    <button class="btn ghost" id="rn-cancel">Keep current</button>
+  `);
+  $('#rn-save').addEventListener('click', () => {
+    const v = $('#rn-name').value.trim();
+    if (!v) { showToast('Name required'); return; }
+    state.friends[id].profile.name = v;
+    save(); renderFriends(); closeSheet(); showToast('Renamed');
+  });
+  $('#rn-cancel').addEventListener('click', closeSheet);
+}
+
+async function promptRefreshFriend(id) {
+  const f = state.friends[id]; if (!f) return;
+  // Fast path: try to pull live from the cloud
+  if (!syncDisabled()) {
+    showToast(`Refreshing ${f.profile.name}…`);
+    const ok = await pullFriend(id);
+    if (ok) {
+      renderFriends();
+      showToast(`${f.profile.name} updated`, { pr: true });
+      haptic(8);
+      return;
+    }
+    // Fall through to manual paste if cloud had nothing for them
+  }
+  openSheet(`
+    <h3>Update ${escapeHtml(f.profile.name)}</h3>
+    <p class="small">Couldn't pull a cloud snapshot for them yet — they may not have opened the new version of Pulse since auto-sync launched. You can paste their newest share link instead.</p>
+    <label class="fld">New share link</label>
+    <textarea class="input" id="rf-url" rows="3" placeholder="Paste a Pulse share link from ${escapeHtml(f.profile.name)}…"></textarea>
+    <div style="height:12px"></div>
+    <button class="btn flame" id="rf-go">Update</button>
+    <div style="height:8px"></div>
+    <button class="btn ghost" id="rf-cancel">Cancel</button>
+  `);
+  $('#rf-go').addEventListener('click', async () => {
+    const text = $('#rf-url').value.trim();
+    if (!text) { showToast('Paste a link first'); return; }
+    try {
+      const m = text.match(/#friend=([^&\s]+)/);
+      const enc = m ? m[1] : text;
+      const snap = await decodeSnapshot(enc);
+      if (snap.profile?.id && snap.profile.id !== id) {
+        if (!confirm(`That link is from ${snap.profile.name || 'someone else'}, not ${f.profile.name}. Add as a new friend instead?`)) {
+          return;
+        }
+      }
+      addFriendFromSnapshot(snap);
+      closeSheet();
+    } catch (e) { console.error(e); showToast('Invalid share link'); }
+  });
+  $('#rf-cancel').addEventListener('click', closeSheet);
+}
+
+function renderFriends() {
+  const fr = state.friends;
+  const ids = Object.keys(fr);
+  if (!ids.length) {
+    $('#friendsList').innerHTML = `<div class="empty">No friends yet. Tap "Share my stats" to send a link, or "+ Add" to import one.</div>`;
+  } else {
+    $('#friendsList').innerHTML = ids.map(id => {
+      const f = fr[id];
+      const s = streakOf(f);
+      const sets = f.workouts?.length || 0;
+      const days = Object.keys(f.daily || {}).length;
+      const last = f.lastSync ? new Date(f.lastSync).toLocaleDateString() : '—';
+      const wd = weeklyDeficit({ daily: f.daily, profile: f.profile }, todayStr()).sum;
+      const wdTxt = `${wd >= 0 ? '−' : '+'}${Math.abs(Math.round(wd)).toLocaleString()}`;
+      return `<div class="friend-card" data-id="${id}">
+        <div class="avatar" style="background:${f.profile.color}">${escapeHtml(f.profile.emoji||'🙂')}</div>
+        <div style="flex:1">
+          <div><strong>${escapeHtml(f.profile.name)}</strong> <span class="small">· 🔥 ${s} · ${sets} sets · ${days} days · 📉 ${wdTxt}</span></div>
+          <div class="meta xs">Synced ${last}</div>
+        </div>
+        <button class="iconbtn" data-action="refresh" aria-label="Refresh" title="Refresh from new link">🔄</button>
+        <button class="iconbtn" data-action="remove" aria-label="Remove">×</button>
+      </div>`;
+    }).join('');
+    $$('#friendsList .friend-card').forEach(c => {
+      c.addEventListener('click', e => {
+        if (e.target.closest('[data-action]')) return;
+        openFriendDetail(c.dataset.id);
+      });
+    });
+    $$('#friendsList [data-action="refresh"]').forEach(b => {
+      b.addEventListener('click', e => {
+        e.stopPropagation();
+        const id = e.currentTarget.closest('.friend-card').dataset.id;
+        promptRefreshFriend(id);
+      });
+    });
+    $$('#friendsList [data-action="remove"]').forEach(b => {
+      b.addEventListener('click', e => {
+        e.stopPropagation();
+        const id = e.currentTarget.closest('.friend-card').dataset.id;
+        const name = state.friends[id]?.profile.name || 'this friend';
+        if (confirm(`Remove ${name}?`)) {
+          delete state.friends[id]; save(); renderFriends(); haptic(15);
+        }
+      });
+    });
+  }
+  renderLeaderboard(currentLB);
+}
+
+function openFriendDetail(id) {
+  const f = state.friends[id];
+  if (!f) return;
+  const last7Days = (() => {
+    const out = [];
+    const d = new Date(); d.setHours(12,0,0,0);
+    for (let i = 6; i >= 0; i--) {
+      const dt = new Date(d); dt.setDate(d.getDate() - i);
+      const k = `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
+      out.push({ x: dt.toLocaleDateString(undefined,{weekday:'short'}).slice(0,2), y: f.daily?.[k]?.steps ?? null });
+    }
+    return out;
+  })();
+  const top1RM = Math.max(0, ...((f.workouts||[]).map(w => epley(w.weight, w.reps))));
+  const fStreak = streakOf(f);
+  const setsCount = f.workouts?.length || 0;
+  const daysCount = Object.keys(f.daily || {}).length;
+  const ach = Object.keys(f.achievements || {}).length;
+  const exercises = [...new Set((f.workouts||[]).map(w => w.exercise))];
+  const exOptions = exercises.map(e => `<option value="${escapeHtml(e)}">${escapeHtml(e)}</option>`).join('');
+
+  openSheet(`
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px">
+      <div class="avatar" style="background:${f.profile.color};width:56px;height:56px;font-size:28px">${escapeHtml(f.profile.emoji||'🙂')}</div>
+      <div style="flex:1">
+        <h3 style="margin:0">${escapeHtml(f.profile.name)}</h3>
+        <div class="small">🔥 ${fStreak} · ${setsCount} sets · ${daysCount} days · ${ach} badges</div>
+      </div>
+      <button class="iconbtn" id="renameFriendBtn" aria-label="Rename" title="Rename">✏️</button>
+    </div>
+
+    <div class="tile-grid cols-3" style="margin-bottom:12px">
+      <div class="tile"><span class="lbl">Streak</span><span class="val countup">${fStreak}<span class="u">days</span></span></div>
+      <div class="tile"><span class="lbl">Top 1RM</span><span class="val countup">${Math.round(top1RM)}<span class="u">lbs</span></span></div>
+      <div class="tile"><span class="lbl">Sets</span><span class="val countup">${setsCount}</span></div>
+    </div>
+
+    <div class="kicker">7-day steps</div>
+    <div class="chart-wrap" id="friendStepsWrap" style="margin-top:8px"></div>
+
+    ${exercises.length ? `
+      <div style="height:14px"></div>
+      <div class="kicker">Lift progression</div>
+      <select class="input" id="friendEx">${exOptions}</select>
+      <div style="height:8px"></div>
+      <div class="chart-wrap" id="friendExWrap"></div>
+    ` : ''}
+
+    <div style="height:14px"></div>
+    <div class="kicker">Head-to-head</div>
+    <div class="tile-grid" style="margin-top:8px">
+      ${headToHeadTile('Streak', streakOf(state), fStreak, 'days')}
+      ${headToHeadTile('Top 1RM', Math.max(0, ...state.workouts.map(w => epley(w.weight, w.reps))), top1RM, 'lbs')}
+      ${headToHeadTile('Week deficit', weeklyDeficit({daily:state.daily,profile:state.profile}, todayStr()).sum, weeklyDeficit({daily:f.daily,profile:f.profile}, todayStr()).sum, 'kcal')}
+      ${headToHeadTile('Sets', state.workouts.length, setsCount, '')}
+    </div>
+
+    <div style="height:14px"></div>
+    <div class="btn-row">
+      <button class="btn secondary" id="refreshFriendBtn">🔄 Update from new link</button>
+      <button class="btn ghost" id="closeFriendBtn">Close</button>
+    </div>
+  `);
+
+  // Wire rename + refresh + close
+  $('#renameFriendBtn')?.addEventListener('click', () => promptRenameFriend(id));
+  $('#refreshFriendBtn')?.addEventListener('click', () => promptRefreshFriend(id));
+  $('#closeFriendBtn')?.addEventListener('click', closeSheet);
+
+  // Render friend's steps bar chart
+  if (last7Days.some(p => p.y != null)) {
+    renderBarChart($('#friendStepsWrap'), last7Days.map(p => ({ x: p.x, y: p.y || 0 })), 'url(#gSteps)');
+  } else {
+    $('#friendStepsWrap').innerHTML = `<div class="empty">No step data shared.</div>`;
+  }
+
+  if (exercises.length) {
+    const sel = $('#friendEx');
+    const drawF = () => {
+      const ex = sel.value;
+      const sets = (f.workouts||[]).filter(w => w.exercise === ex);
+      if (!sets.length) { $('#friendExWrap').innerHTML = `<div class="empty">No data.</div>`; return; }
+      const byDate = {};
+      sets.forEach(s => { const c = byDate[s.date]; if (!c || s.weight > c.weight) byDate[s.date] = s; });
+      const dates = Object.keys(byDate).sort();
+      const data = dates.map(d => ({ x: fmtDate(d), y: byDate[d].weight }));
+      renderLineChart($('#friendExWrap'), [{ label: f.profile.name, color: f.profile.color, gradId: 'gPR', data }]);
+    };
+    sel.addEventListener('change', drawF);
+    drawF();
+  }
+}
+
+function headToHeadTile(label, you, them, unit) {
+  const youW = you > them, tie = Math.abs(you - them) < 0.01;
+  const winColor = '#2ee59d', loseColor = '#ff5d6c', tieColor = '#a78bfa';
+  const youColor = tie ? tieColor : (youW ? winColor : loseColor);
+  const themColor = tie ? tieColor : (youW ? loseColor : winColor);
+  return `<div class="tile">
+    <span class="lbl">${escapeHtml(label)}</span>
+    <div style="display:flex;justify-content:space-between;align-items:end;gap:6px">
+      <span class="val countup" style="color:${youColor}">${Math.round(you*10)/10}<span class="u">${unit}</span></span>
+      <span class="meta xs">vs</span>
+      <span class="val countup" style="color:${themColor};font-size:18px;opacity:.85">${Math.round(them*10)/10}</span>
+    </div>
+  </div>`;
+}
+
+let currentLB = 'streak';
+$$('#lbTabs .chip').forEach(c => c.addEventListener('click', () => {
+  $$('#lbTabs .chip').forEach(x => x.classList.remove('active'));
+  c.classList.add('active');
+  currentLB = c.dataset.lb;
+  renderLeaderboard(currentLB);
+}));
+
+function lastNDaysSum(person, field, n=7) {
+  const d = new Date(); d.setHours(12,0,0,0);
+  let total = 0;
+  for (let i = 0; i < n; i++) {
+    const k = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    total += (person.daily?.[k]?.[field] || 0);
+    d.setDate(d.getDate() - 1);
+  }
+  return total;
+}
+
+function renderLeaderboard(metric) {
+  const all = [{ id: state.profile.id, profile: state.profile, daily: state.daily, workouts: state.workouts, isMe: true },
+    ...Object.entries(state.friends).map(([id, f]) => ({ id, profile: f.profile, daily: f.daily || {}, workouts: f.workouts || [], isMe: false }))];
+  let scorer, fmt;
+  if (metric === 'streak') { scorer = p => streakOf(p); fmt = v => `${v} days`; }
+  else if (metric === 'lift') { scorer = p => Math.max(0, ...(p.workouts||[]).map(w => epley(w.weight, w.reps))); fmt = v => `${Math.round(v)} lbs`; }
+  else if (metric === 'steps7') { scorer = p => lastNDaysSum(p, 'steps', 7); fmt = v => `${v.toLocaleString()} steps`; }
+  else if (metric === 'cal7') { scorer = p => lastNDaysSum(p, 'burned', 7); fmt = v => `${v.toLocaleString()} kcal`; }
+  else if (metric === 'deficit') {
+    scorer = p => weeklyDeficit({ daily: p.daily, profile: p.profile }, todayStr()).sum;
+    fmt = v => `${v >= 0 ? '−' : '+'}${Math.abs(Math.round(v)).toLocaleString()} kcal`;
+  }
+  const ranked = all.map(p => ({ ...p, score: scorer(p) })).sort((a,b) => b.score - a.score);
+  $('#leaderboard').innerHTML = ranked.map((p, i) => `
+    <div class="lb-row ${i===0?'first':''}">
+      <span class="rank">${i+1}</span>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="avatar" style="width:28px;height:28px;font-size:14px;background:${p.profile.color}">${escapeHtml(p.profile.emoji||'🙂')}</span>
+        <span><strong>${escapeHtml(p.profile.name)}</strong>${p.isMe?' <span class="small">(you)</span>':''}</span>
+      </div>
+      <span style="font-weight:700">${fmt(p.score)}</span>
+    </div>
+  `).join('');
+}
+
+// ====================== DATA EXPORT/IMPORT/RESET ======================
+$('#exportBtn').addEventListener('click', () => {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `pulse-${state.profile.name.toLowerCase().replace(/\s+/g,'-')}-${todayStr()}.json`;
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+  showToast('Exported');
+});
+$('#importBtn').addEventListener('click', () => $('#importFile').click());
+$('#importFile').addEventListener('change', e => {
+  const f = e.target.files[0]; if (!f) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const data = JSON.parse(reader.result);
+      if (!data || typeof data !== 'object') throw new Error();
+      if (confirm('Replace YOUR data with this file? Friends will be preserved.')) {
+        const friends = state.friends; // preserve
+        const merged = {
+          profile: data.profile || state.profile,
+          daily: data.daily || {},
+          workouts: data.workouts || [],
+          achievements: data.achievements || {},
+          friends,
+          lastViewedDate: state.lastViewedDate
+        };
+        // Make sure profile.goals is filled
+        merged.profile.goals = { ...DEFAULT_GOALS, ...(merged.profile.goals || {}) };
+        state = merged; save();
+        loadDailyForm(todayStr()); renderDailyList(); renderWorkouts();
+        renderQuickExercises(); renderExerciseDatalist(); populateProgressExercises();
+        renderAllCharts(); updateGreeting(); updateStreakUI();
+        showToast('Imported');
+      }
+    } catch { alert('Invalid JSON file'); }
+  };
+  reader.readAsText(f);
+  e.target.value = '';
+});
+$('#resetBtn').addEventListener('click', () => {
+  if (confirm('This will delete ALL of YOUR data on this device (your friends will stay). Continue?')) {
+    const friends = state.friends;
+    state = defaultState(); state.friends = friends; save();
+    loadDailyForm(todayStr()); renderDailyList(); renderWorkouts();
+    renderQuickExercises(); renderExerciseDatalist(); populateProgressExercises();
+    renderAllCharts(); updateGreeting(); updateStreakUI();
+    showToast('Cleared your data');
+  }
+});
+
+// ====================== HASH HANDLING (incoming friend link) ======================
+async function handleHash() {
+  const m = location.hash.match(/#friend=([^&]+)/);
+  if (!m) return;
+  try {
+    const snap = await decodeSnapshot(decodeURIComponent(m[1]));
+    history.replaceState(null, '', location.pathname + location.search);
+    // If we already have this friend, auto-update silently and skip the prompt
+    const existing = snap.profile?.id && state.friends[snap.profile.id];
+    if (existing) {
+      addFriendFromSnapshot(snap);
+      // jump to their card so the user can see what changed
+      setTimeout(() => { switchTab('friends'); openFriendDetail(snap.profile.id); }, 300);
+      return;
+    }
+    if (snap.profile?.id === state.profile.id) {
+      showToast("That's your own link 😅");
+      return;
+    }
+    openSheet(`
+      <h3>Add ${escapeHtml(snap.profile.name)}?</h3>
+      <div style="display:flex;align-items:center;gap:12px;margin:10px 0">
+        <div class="avatar" style="background:${snap.profile.color};width:56px;height:56px;font-size:28px">${escapeHtml(snap.profile.emoji||'🙂')}</div>
+        <div>
+          <strong>${escapeHtml(snap.profile.name)}</strong> wants to share their stats with you.
+          <div class="small">${(snap.workouts||[]).length} sets · ${Object.keys(snap.daily||{}).length} days · 🔥 ${streakOf(snap)}</div>
+        </div>
+      </div>
+      <button class="btn flame" id="acceptFriend">Add as friend</button>
+      <div style="height:8px"></div>
+      <button class="btn ghost" id="declineFriend">Not now</button>
+    `);
+    $('#acceptFriend').addEventListener('click', () => { addFriendFromSnapshot(snap); closeSheet(); switchTab('friends'); });
+    $('#declineFriend').addEventListener('click', closeSheet);
+  } catch (e) {
+    console.warn('bad hash', e);
+  }
+}
+
+// ====================== EVENT WIRING ======================
+$('#d-save').addEventListener('click', saveDaily);
+$('#d-clear').addEventListener('click', clearDaily);
+$('#d-date').addEventListener('change', () => loadDailyForm($('#d-date').value));
+$('#w-add').addEventListener('click', addSet);
+$('#p-exercise').addEventListener('change', renderProgressionChart);
+$('#streakPill').addEventListener('click', () => switchTab('progress'));
+
+// Update rings when daily inputs change (live preview)
+['weight','calories','burned','protein','carbs','fats','steps'].forEach(f => {
+  $('#d-' + f).addEventListener('input', () => {
+    // Don't save, just preview
+    const date = $('#d-date').value;
+    if (!date) return;
+    const tmp = { ...state.daily[date] };
+    const v = num($('#d-' + f).value);
+    if (v == null) delete tmp[f]; else tmp[f] = v;
+    // Use a temp state shallow override for the rings
+    state.daily[date] = tmp;
+    renderRings();
+  });
+});
+
+// ====================== INIT ======================
+function init() {
+  const today = todayStr();
+  $('#d-date').value = today;
+  $('#w-date').value = today;
+  loadDailyForm(today);
+  renderDailyList();
+  renderWorkouts();
+  renderQuickExercises();
+  renderExerciseDatalist();
+  populateProgressExercises();
+  updateGreeting();
+  updateStreakUI();
+  renderBadges();
+  renderWeeklyDeficit();
+  handleHash();
+  // Splash hide
+  setTimeout(() => $('#splash').classList.add('hide'), 600);
+  // First-time achievement check
+  setTimeout(checkAchievementsUI, 1200);
+  // First-run: prompt for a real name so friends never see them as "You"
+  if (profileNameLooksDefault() && !location.hash.includes('friend=')) {
+    setTimeout(() => openWelcomeSheet(), 900);
+  }
+  // Cloud sync: pull friends' latest data, then push our own
+  updateSyncIndicator();
+  if (!syncDisabled()) {
+    setTimeout(() => { pullAllFriends(); }, 400);
+    setTimeout(() => { if (!profileNameLooksDefault()) pushSnapshot(); }, 1200);
+    // Periodic refresh while the app is open
+    clearInterval(_pullTimer);
+    _pullTimer = setInterval(() => {
+      if (document.visibilityState === 'visible') pullAllFriends();
+    }, 60_000);
+    // Also pull when the tab regains focus (user switching back to the app)
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') pullAllFriends();
+    });
+  }
+}
+init();
+
+})();
+</script>
+</body>
+</html>
