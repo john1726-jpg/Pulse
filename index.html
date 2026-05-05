@@ -198,6 +198,18 @@
   }
   .deficit-bars .day.today { box-shadow: inset 0 0 0 1px rgba(255,255,255,.18); }
   .deficit-foot { margin-top: 22px; color: var(--muted); }
+  .deficit-range { margin-top: 4px; }
+  .deficit-nav {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);
+  }
+  .deficit-nav .iconbtn {
+    width: 36px; height: 36px; border-radius: 12px;
+    background: rgba(255,255,255,.04); border: 1px solid var(--border);
+    color: var(--text); font-size: 18px; line-height: 1;
+  }
+  .deficit-nav .iconbtn:disabled { opacity: .3; cursor: not-allowed; }
+  .btn.xs { padding: 6px 14px; font-size: 12px; min-height: 0; }
 
   /* Stat tiles */
   .tile-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; }
@@ -484,14 +496,20 @@
     <div class="card deficit-card" id="weeklyDeficitCard">
       <div class="deficit-head">
         <div>
-          <div class="kicker">This week</div>
+          <div class="kicker" id="deficitKicker">This week</div>
           <h2 style="margin:2px 0 0">Calorie deficit</h2>
+          <div class="deficit-range small muted" id="deficitRange">—</div>
         </div>
         <div class="deficit-meta" id="deficitMeta">—</div>
       </div>
       <div class="deficit-big" id="deficitBig">—</div>
       <div class="deficit-bars" id="deficitBars"></div>
       <div class="deficit-foot small" id="deficitFoot">Resets every Monday.</div>
+      <div class="deficit-nav">
+        <button class="iconbtn" id="deficitPrev" aria-label="Previous week">‹</button>
+        <button class="btn ghost xs" id="deficitToday">Today</button>
+        <button class="iconbtn" id="deficitNext" aria-label="Next week" disabled>›</button>
+      </div>
     </div>
 
     <!-- Quick log -->
@@ -1102,13 +1120,14 @@ function clearDaily() {
   showToast('Cleared ' + fmtDate(date));
 }
 
-// Returns YYYY-MM-DD strings for Monday → Sunday of the week containing `date` (default today)
-function weekDays(refDate) {
+// Returns YYYY-MM-DD strings for Monday → Sunday of the week containing `date` (default today),
+// optionally shifted by `weekOffset` weeks (negative = past, positive = future).
+function weekDays(refDate, weekOffset = 0) {
   const d = refDate ? new Date(refDate + 'T12:00:00') : new Date();
   d.setHours(12,0,0,0);
   // JS Sunday=0..Saturday=6 — convert so Monday=0..Sunday=6
   const dow = (d.getDay() + 6) % 7;
-  const monday = new Date(d); monday.setDate(d.getDate() - dow);
+  const monday = new Date(d); monday.setDate(d.getDate() - dow + (weekOffset * 7));
   const out = [];
   for (let i = 0; i < 7; i++) {
     const x = new Date(monday); x.setDate(monday.getDate() + i);
@@ -1130,8 +1149,8 @@ function dailyDeficit(person, dateStr) {
   return (goalCals + burned) - consumed;
 }
 
-function weeklyDeficit(person, refDate) {
-  const days = weekDays(refDate);
+function weeklyDeficit(person, refDate, weekOffset = 0) {
+  const days = weekDays(refDate, weekOffset);
   let sum = 0, logged = 0;
   const perDay = days.map(d => {
     const v = dailyDeficit(person, d);
@@ -1141,15 +1160,46 @@ function weeklyDeficit(person, refDate) {
   return { sum, logged, perDay, days };
 }
 
+// Find the earliest week (negative offset, e.g. -3 means 3 weeks ago) the user has data for.
+function earliestLoggedWeekOffset() {
+  const dates = Object.keys(state.daily || {});
+  if (!dates.length) return 0;
+  const earliest = dates.sort()[0];
+  const weeks = weekDays(todayStr(), 0);
+  const thisMon = new Date(weeks[0] + 'T12:00:00');
+  const earlyDate = new Date(earliest + 'T12:00:00');
+  const diffDays = Math.round((thisMon - earlyDate) / 86400000);
+  return -Math.max(0, Math.ceil(diffDays / 7));
+}
+
+let _deficitWeekOffset = 0;
+
+function fmtRange(days) {
+  const a = new Date(days[0] + 'T12:00:00');
+  const b = new Date(days[6] + 'T12:00:00');
+  const sameMonth = a.getMonth() === b.getMonth();
+  const opt = { month: 'short', day: 'numeric' };
+  return sameMonth
+    ? `${a.toLocaleDateString(undefined, opt)} – ${b.getDate()}`
+    : `${a.toLocaleDateString(undefined, opt)} – ${b.toLocaleDateString(undefined, opt)}`;
+}
+
 function renderWeeklyDeficit() {
   const card = $('#weeklyDeficitCard'); if (!card) return;
   const today = todayStr();
-  const wk = weeklyDeficit({ daily: state.daily, profile: state.profile }, today);
+  const offset = _deficitWeekOffset;
+  const wk = weeklyDeficit({ daily: state.daily, profile: state.profile }, today, offset);
   const big = $('#deficitBig'), bars = $('#deficitBars'), meta = $('#deficitMeta'), foot = $('#deficitFoot');
+  const kicker = $('#deficitKicker'), range = $('#deficitRange');
   const sign = wk.sum >= 0 ? '−' : '+'; // a positive "deficit" reads as a negative net
   const abs = Math.abs(Math.round(wk.sum));
   big.innerHTML = `${sign}${abs.toLocaleString()}<span style="font-size:18px;color:var(--muted);font-weight:600;margin-left:4px">kcal</span>`;
   card.classList.toggle('surplus', wk.sum < 0);
+
+  // Header label changes by offset
+  const label = offset === 0 ? 'This week' : offset === -1 ? 'Last week' : `${Math.abs(offset)} weeks ago`;
+  if (kicker) kicker.textContent = label;
+  if (range) range.textContent = fmtRange(wk.days);
 
   const dowShort = ['M','T','W','T','F','S','S'];
   const todayIdx = wk.days.indexOf(today);
@@ -1173,10 +1223,24 @@ function renderWeeklyDeficit() {
 
   // Lbs estimate (3500 kcal ≈ 1 lb)
   const lbs = wk.sum / 3500;
+  const tense = offset === 0 ? 'so far this week' : (offset === -1 ? 'last week' : `${Math.abs(offset)} weeks ago`);
   const lbsTxt = wk.sum >= 0
-    ? `≈ ${lbs.toFixed(2)} lb lost so far this week`
-    : `≈ ${Math.abs(lbs).toFixed(2)} lb gained so far this week`;
+    ? `≈ ${lbs.toFixed(2)} lb lost ${tense}`
+    : `≈ ${Math.abs(lbs).toFixed(2)} lb gained ${tense}`;
   foot.innerHTML = `${lbsTxt} · Daily = (goal ${goalCals.toLocaleString()} + burned − eaten). Resets Monday.`;
+
+  // Update nav buttons
+  const prevBtn = $('#deficitPrev'), nextBtn = $('#deficitNext'), todayBtn = $('#deficitToday');
+  if (nextBtn) nextBtn.disabled = (offset >= 0);
+  if (prevBtn) prevBtn.disabled = (offset <= earliestLoggedWeekOffset() - 1); // allow scrolling 1 past earliest log
+  if (todayBtn) todayBtn.style.visibility = offset === 0 ? 'hidden' : 'visible';
+}
+
+// Wire deficit nav buttons (called once during init since they're in static markup)
+function wireDeficitNav() {
+  $('#deficitPrev')?.addEventListener('click', () => { _deficitWeekOffset -= 1; renderWeeklyDeficit(); haptic(5); });
+  $('#deficitNext')?.addEventListener('click', () => { if (_deficitWeekOffset < 0) { _deficitWeekOffset += 1; renderWeeklyDeficit(); haptic(5); } });
+  $('#deficitToday')?.addEventListener('click', () => { _deficitWeekOffset = 0; renderWeeklyDeficit(); haptic(5); });
 }
 
 function renderDailySnapshot() {
@@ -2431,6 +2495,7 @@ function init() {
   updateGreeting();
   updateStreakUI();
   renderBadges();
+  wireDeficitNav();
   renderWeeklyDeficit();
   handleHash();
   // Splash hide
